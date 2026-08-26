@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A arquitetura do Noortio ponto a ponto: portão, captura, julgamento, corte grátis/pago, persistência, diff, cota, i18n e os limites de plataforma.">
+<meta property="og:title" content="Arquitetura do Noortio">
+<meta property="og:description" content="A arquitetura do Noortio ponto a ponto, lida do código.">
+<meta property="og:type" content="article">
+<title>Arquitetura do Noortio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  img,svg{max-width:100%;height:auto}
+  :root{
+    --ground:#f6f5f1;
+    --surface:#fffefb;
+    --ink:#17180f;
+    --ink-2:#5c5955;
+    --ink-3:#8a877f;
+    --rule:#dedbd2;
+    --rule-forte:#c9c5b8;
+    --alto:#b8402f;
+    --medio:#a2661a;
+    --baixo:#7d6a2a;
+    --frio:#3f4a52;
+    --link:#4a6300;
+    --marca:#c5fd24;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:16.5px;line-height:1.62;letter-spacing:-.006em;
+  }
+  .env{max-width:58rem;margin:0 auto;padding:0 1.5rem 6rem}
+  code,pre,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  .rotulo{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--ink-2);text-transform:lowercase}
+
+  header{padding:5rem 0 2.5rem;display:flex;flex-direction:column;gap:1.4rem}
+  h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.06;letter-spacing:-.028em;font-weight:600;margin:0;text-wrap:balance;max-width:20ch}
+  .lede{font-size:1.13rem;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  /* ── o mapa ─────────────────────────────────────────── */
+  .mapa{
+    border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);
+    padding:1.75rem 0;margin-top:.5rem;overflow-x:auto;
+  }
+  .mapa svg{display:block;min-width:44rem}
+
+  /* ── índice ─────────────────────────────────────────── */
+  nav.indice{padding-top:2.75rem}
+  nav.indice ol{
+    list-style:none;margin:.75rem 0 0;padding:0;
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:.1rem 2rem;
+  }
+  nav.indice li{border-bottom:1px solid var(--rule);padding:.5rem 0}
+  nav.indice a{display:flex;gap:.75rem;text-decoration:none;color:var(--ink)}
+  nav.indice a:hover{background:none;color:var(--link)}
+  nav.indice .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);padding-top:.3rem;font-variant-numeric:tabular-nums}
+
+  /* ── seções ─────────────────────────────────────────── */
+  section{padding-top:3.5rem;scroll-margin-top:1.5rem}
+  .cabeca{display:grid;grid-template-columns:2.5rem 1fr;gap:0 1rem;border-top:1px solid var(--ink);padding-top:1.25rem;margin-bottom:1.5rem}
+  .cabeca .n{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);padding-top:.45rem;font-variant-numeric:tabular-nums}
+  h2{font-size:1.5rem;font-weight:600;margin:0 0 .3rem;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+  .resumo{color:var(--ink-2);margin:0;max-width:62ch}
+  .corpo{display:grid;grid-template-columns:2.5rem 1fr;gap:0 1rem}
+  .corpo > .vazio{border-right:1px solid var(--rule)}
+  .corpo p,.corpo ul{max-width:66ch}
+  .corpo p{margin:0 0 1rem}
+  .corpo h3{font-size:1.05rem;font-weight:600;margin:1.75rem 0 .5rem;letter-spacing:-.012em}
+  .corpo h3:first-child{margin-top:0}
+  ul{margin:0 0 1rem;padding-left:1.1rem}
+  li{margin-bottom:.5rem}
+  li::marker{color:var(--ink-3)}
+
+  .ref{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--ink-2)}
+  code{font-size:.9em;background:var(--surface);border:1px solid var(--rule);padding:.05em .3em;white-space:nowrap}
+  pre{margin:.25rem 0 1.25rem;padding:.75rem .9rem;background:var(--surface);border:1px solid var(--rule);font-size:.83rem;line-height:1.55;overflow-x:auto;white-space:pre}
+  pre code{background:none;border:0;padding:0;white-space:pre}
+
+  .nota{
+    background:var(--surface);border-left:2px solid var(--rule-forte);
+    padding:.85rem 1rem;margin:0 0 1.25rem;max-width:68ch;
+  }
+  .nota.risco{border-left-color:var(--alto)}
+  .nota .rotulo{display:block;margin-bottom:.3rem}
+  .nota p{margin:0}
+  .nota p + p{margin-top:.6rem}
+
+  .tabela-env{overflow-x:auto;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);margin:0 0 1.25rem}
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  th,td{text-align:left;padding:.55rem 1rem .55rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  th{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-2);font-weight:400;text-transform:lowercase}
+  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .fecho{margin-top:4.5rem;border-top:2px solid var(--ink);padding-top:2rem;display:flex;flex-direction:column;gap:1rem}
+  .fecho p{margin:0;max-width:66ch}
+  a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{background:var(--marca);color:var(--ink);text-decoration:none}
+  a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:2px}
+  .irmao{margin-top:2.5rem;padding:1.15rem 0;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);display:flex;flex-direction:column;gap:.45rem}
+  .irmao p{margin:0}
+  @media (max-width:640px){
+    body{font-size:16px}
+    .cabeca,.corpo{grid-template-columns:1.5rem 1fr}
+  }
+</style>
+</head>
+<body>
+<div class="env">
+
+<header>
+  <span class="rotulo">noortio · arquitetura lida do código · 26/08/2026</span>
+  <h1>Arquitetura do Noortio</h1>
+  <p class="lede">O produto é uma pergunta cara respondida em duas metades: <strong>o que dá para medir</strong> num site, e <strong>o que só dá para julgar</strong>. Quase toda decisão de arquitetura aqui existe para manter essas duas metades separadas — e para que a segunda, que é feita por um modelo não-determinístico, não contamine a primeira.</p>
+
+  <div class="mapa">
+    <svg viewBox="0 0 880 200" role="img" aria-labelledby="mapa-t mapa-d">
+      <title id="mapa-t">Fluxo principal do Noortio</title>
+      <desc id="mapa-d">URL entra pelo portão de DNS, passa pela captura com Chromium, pela medição no DOM, pelo julgamento com a escada de modelos e o piso de qualidade, pela reconciliação, e sai como relatório lacrado. Ao ser reivindicado, é gravado no Postgres, e uma segunda execução gera o diff.</desc>
+      <g font-family="IBM Plex Mono, monospace" font-size="11">
+        <!-- trilho -->
+        <line x1="24" y1="70" x2="856" y2="70" stroke="#c9c5b8" stroke-width="1"/>
+
+        <!-- etapas -->
+        <g fill="#17180f">
+          <rect x="24" y="62" width="3" height="16" fill="#3f4a52"/>
+          <text x="36" y="68">URL</text>
+          <text x="36" y="84" fill="#5c5955">portão de DNS</text>
+          <text x="36" y="98" fill="#8a877f">~50 ms</text>
+
+          <rect x="176" y="62" width="3" height="16" fill="#3f4a52"/>
+          <text x="188" y="68">captura</text>
+          <text x="188" y="84" fill="#5c5955">Chromium · 2 vistas</text>
+          <text x="188" y="98" fill="#8a877f">até 200 s · 2 GB</text>
+
+          <rect x="344" y="62" width="3" height="16" fill="#7d6a2a"/>
+          <text x="356" y="68">medição</text>
+          <text x="356" y="84" fill="#5c5955">DOM + SEO técnico</text>
+          <text x="356" y="98" fill="#8a877f">números, sem opinião</text>
+
+          <rect x="512" y="62" width="3" height="16" fill="#a2661a"/>
+          <text x="524" y="68">julgamento</text>
+          <text x="524" y="84" fill="#5c5955">escada + piso</text>
+          <text x="524" y="98" fill="#8a877f">até 300 s</text>
+
+          <rect x="672" y="62" width="3" height="16" fill="#7d6a2a"/>
+          <text x="684" y="68">reconciliação</text>
+          <text x="684" y="84" fill="#5c5955">tetos e carimbo</text>
+          <text x="684" y="98" fill="#8a877f">nada do modelo</text>
+
+          <rect x="820" y="62" width="3" height="16" fill="#3f4a52"/>
+          <text x="832" y="68" text-anchor="end" x="812">relatório</text>
+        </g>
+
+        <!-- ramo persistência -->
+        <path d="M690 108 L690 150 L36 150" fill="none" stroke="#c9c5b8" stroke-width="1" stroke-dasharray="3 3"/>
+        <text x="48" y="146" fill="#5c5955">reivindicar → Postgres → 2ª execução → diff</text>
+        <text x="48" y="164" fill="#8a877f">a única parte que persiste</text>
+
+        <!-- lacre -->
+        <text x="524" y="126" fill="#5c5955">o relatório volta ao cliente CIFRADO (AES-256-GCM)</text>
+      </g>
+    </svg>
+  </div>
+</header>
+
+<nav class="indice" aria-label="Índice">
+  <span class="rotulo">as onze peças</span>
+  <ol>
+    <li><a href="#p1"><span class="n">01</span><span>O portão, antes de gastar</span></a></li>
+    <li><a href="#p2"><span class="n">02</span><span>Captura</span></a></li>
+    <li><a href="#p3"><span class="n">03</span><span>Medição no DOM</span></a></li>
+    <li><a href="#p4"><span class="n">04</span><span>Julgamento</span></a></li>
+    <li><a href="#p5"><span class="n">05</span><span>Reconciliação e rigor</span></a></li>
+    <li><a href="#p6"><span class="n">06</span><span>O lacre e o corte grátis/pago</span></a></li>
+    <li><a href="#p7"><span class="n">07</span><span>Persistência</span></a></li>
+    <li><a href="#p8"><span class="n">08</span><span>O diff</span></a></li>
+    <li><a href="#p9"><span class="n">09</span><span>Conta, plano e cota</span></a></li>
+    <li><a href="#p10"><span class="n">10</span><span>Idiomas</span></a></li>
+    <li><a href="#p11"><span class="n">11</span><span>Plataforma e limites</span></a></li>
+  </ol>
+</nav>
+
+<section id="p1">
+  <div class="cabeca"><span class="n">01</span>
+    <div><h2>O portão, antes de gastar</h2>
+    <p class="resumo">A primeira decisão de arquitetura é sobre dinheiro: descobrir cedo que não vale a pena começar.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><code>capture()</code> sobe o Chromium <em>antes</em> de falar com o domínio. Descobrir que alguém digitou <code>gogle.cmo</code> custava de 5 a 12 segundos — quase tudo gasto ligando um navegador para uma página que nunca existiu. Perguntar ao DNS custa dezenas de milissegundos e responde a mesma coisa. Daí <span class="ref">lib/dns-gate.ts</span>.</p>
+    <p>O módulo não importa nada além de <code>node:dns</code>, e isso é deliberado: <code>capture.ts</code> arrasta o Playwright junto, e um portão que decide se vale a pena começar a captura não pode depender do que ele está guardando.</p>
+    <p>Três peças pequenas compõem a entrada:</p>
+    <ul>
+      <li><strong>Normalização</strong> — <code>normalizeTarget()</code> é a fonte única de "qual endereço está sendo testado". <span class="ref">lib/page-key.ts</span> reusa a mesma função em vez de reparsear, porque um segundo parser criaria a chance de o portão, a captura e o banco discordarem sobre a mesma URL — divergência que só aparece em produção.</li>
+      <li><strong>Chave de página</strong> — o projeto é o <em>domínio</em> e a página é o <em>caminho</em>. Guardar <code>site.com/</code> e <code>site.com/precos</code> na mesma linha do tempo faria o diff comparar páginas diferentes e afirmar, com toda a confiança, que o H1 mudou.</li>
+      <li><strong>Mesma origem</strong> — <span class="ref">lib/same-origin.ts</span> compara o <code>Origin</code> com o host que o <em>navegador</em> endereçou, não com <code>request.url</code>. No Next, <code>request.url</code> é montado a partir do hostname de <em>bind</em> do processo; com <code>next dev -H 0.0.0.0</code> ele vira <code>http://0.0.0.0:3210/…</code> e a checagem ingênua recusa requisição legítima.</li>
+    </ul>
+    <div class="nota"><span class="rotulo">o padrão que se repete</span>
+    <p>Cada um desses módulos existe porque a versão óbvia falhou de um jeito específico, e o comentário no topo do arquivo guarda <em>qual</em>. Esse é o traço mais forte deste repositório: o código documenta a decisão, não a linha.</p></div>
+  </div></div>
+</section>
+
+<section id="p2">
+  <div class="cabeca"><span class="n">02</span>
+    <div><h2>Captura</h2>
+    <p class="resumo">Um navegador de verdade, duas vistas, e três planos de contingência para o site que não quer ser lido.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><span class="ref">lib/capture.ts</span> · 1.020 linhas, o módulo mais pesado do repositório — e o que menos se deve reescrever por gosto, porque quase toda linha é um caso-limite que alguém já pagou para descobrir.</p>
+    <h3>Dois navegadores, um código</h3>
+    <p>Em local, o Playwright completo com o Chromium da instalação. Na Vercel isso não existe — o build não roda <code>playwright install</code> e o binário não cabe no fluxo normal —, então entra um Chromium empacotado para serverless, carregado sob demanda para não pesar no bundle local. A escolha é feita em runtime por <code>onServerless()</code>.</p>
+    <h3>O retry que salva site no ar</h3>
+    <p>O Chromium serverless derruba a conexão com servidores que negociam HTTP/2 de um jeito que ele não aceita, e um site que abre em qualquer navegador chega como <code>ERR_HTTP2_PROTOCOL_ERROR</code>. A segunda tentativa força HTTP/1.1. Não é o padrão de propósito: forçar HTTP/1.1 custa velocidade em <em>toda</em> página, para resolver o problema de algumas.</p>
+    <h3>O que sai de cada captura</h3>
+    <pre><code>desktop  1440×900   foldJpeg + fullJpeg + measurements + documentHeight
+mobile    375×812   foldJpeg + measurements
+seo                 leitura técnica da resposta e do &lt;head&gt;
+coverage            o que NÃO foi possível ler (CSS computado, amostragem)</code></pre>
+    <p><code>coverage</code> é a peça discreta que sustenta a honestidade do resto: quando a página é grande demais e a medição foi feita por amostra, isso viaja junto do dado — e mais adiante vira "não comparável" no diff em vez de virar um número falso.</p>
+    <h3>Plano B, e o que ele não é</h3>
+    <p>Bloqueio por ASN de datacenter não se resolve com código. Medido pelo autor: dois domínios devolvem 200 para IP residencial e barram o da Vercel; um terceiro devolve 403 do Akamai até para IP residencial, por impressão digital de TLS. Nenhuma flag de Chromium muda um handshake TLS — o que muda é de onde a requisição sai. Daí o Firecrawl em <span class="ref">lib/firecrawl.ts</span>, e com regras estritas: <strong>não roda em paralelo</strong> com o navegador próprio nem "por garantia", só quando o próprio falhou por bloqueio, e só se houver saldo mínimo.</p>
+  </div></div>
+</section>
+
+<section id="p3">
+  <div class="cabeca"><span class="n">03</span>
+    <div><h2>Medição no DOM</h2>
+    <p class="resumo">A âncora de credibilidade do produto inteiro. É aqui que o Noortio deixa de ser opinião.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><span class="ref">lib/measure-browser.js</span> roda <em>dentro</em> da página: contraste WCAG contra a cor real computada, LCP, peso, contagem de H1, imagens sem <code>alt</code>, CTAs acima da dobra, tamanhos de fonte distintos, proporção de negrito, overflow horizontal e alvos de toque abaixo de 44 px. Tudo número, nada inferido.</p>
+    <p><span class="ref">lib/seo.ts</span> acrescenta a leitura técnica: indexabilidade, canônica, description, e um score com pesos declarados — com curto-circuito quando há <code>noindex</code>, porque uma página que se esconde do buscador não tem SEO parcial.</p>
+    <div class="nota risco"><span class="rotulo">o detalhe frágil que vale conhecer</span>
+    <p>A função de medição é serializada com <code>toString()</code> e injetada na página. Qualquer construção que o transpilador aceite mas o navegador não quebra <strong>em runtime, dentro da página</strong> — e o <code>typecheck</code> passa limpo. É a classe de defeito mais invisível do repositório, e a razão de a suíte de testes medir contra páginas de fixture com valores conhecidos por construção.</p></div>
+    <p>Essa camada é a que o produto lidera na tela, e por um motivo estrutural: dos nove eixos do placar, <strong>um</strong> é medido, <strong>um</strong> é misto e <strong>sete</strong> são julgamento. Sem a medição, o relatório inteiro seria opinião com cara de rigor.</p>
+  </div></div>
+</section>
+
+<section id="p4">
+  <div class="cabeca"><span class="n">04</span>
+    <div><h2>Julgamento</h2>
+    <p class="resumo">Uma skill como system prompt, uma escada de modelos que começa no grátis, e um piso que impede o barato de entregar vazio.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <h3>A skill é o system prompt</h3>
+    <p>Isto é o ativo do produto. <span class="ref">lib/prompt.ts</span> carrega <code>skill/SKILL.md</code> inteiro — o protocolo de onze passagens destilado de 19 episódios do Design Review do Y Combinator — mais o catálogo de <em>AI tells</em>. Os módulos por contexto e o modo criação ficam de fora: o primeiro só serve quando o caso corresponde, o segundo não se aplica a auditoria. Mudar esse arquivo muda o produto; ele é portátil para qualquer linguagem ou provedor.</p>
+    <h3>A escada</h3>
+    <p><span class="ref">lib/models.ts</span> monta a escada em runtime a partir do catálogo do OpenRouter: grátis → barato → bom. A ordem é do mais barato para o mais capaz, o que também é do pior para o melhor julgamento — e isso <em>só é seguro</em> por causa da peça seguinte.</p>
+    <h3>O piso de qualidade</h3>
+    <p><span class="ref">lib/quality.ts</span>. Um modelo fraco costuma devolver JSON perfeitamente válido com julgamento vazio: prescrição genérica, evidência sem número, "melhore o contraste". Isso passa em qualquer validação de schema e reprova como produto. O piso confere coisas objetivas — 9 eixos, 4 a 6 achados, veredito com corpo, prescrição não-genérica, e <strong>taxa de citação de fato verificável</strong>: metade dos achados precisa citar um número medido ou o texto literal da página.</p>
+    <pre><code>modelo devolve → assessQuality()
+   reprovou → segunda passada com os MOTIVOS da reprovação
+      reprovou de novo → próximo degrau da escada
+   aprovou → reconciliação</code></pre>
+    <p>A segunda passada é dirigida: o modelo recebe a lista do que faltou, não um "tente de novo". Só depois de falhar duas vezes a escada avança — o que evita trocar de modelo por um erro que o mesmo modelo consegue corrigir.</p>
+    <div class="nota"><span class="rotulo">o que o relatório mostra</span>
+    <p>O rótulo público é <code>motor de julgamento noortio v1</code>, nunca o slug do OpenRouter (<span class="ref">lib/engine.ts</span>). O raciocínio está escrito lá: expor o slug comunicava "sou um wrapper" e comoditizava justamente a parte proprietária, que não é o modelo — é o protocolo, a medição e a reconciliação. A procedência real continua no tipo, no log e no diff, que precisa saber quando comparou execuções julgadas por modelos diferentes.</p></div>
+  </div></div>
+</section>
+
+<section id="p5">
+  <div class="cabeca"><span class="n">05</span>
+    <div><h2>Reconciliação e rigor</h2>
+    <p class="resumo">A camada que impede o relatório de se contradizer — e onde, deliberadamente, o modelo não tem voz.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><span class="ref">lib/rigor.ts</span>, com uma frase de abertura que define a postura: <em>"ele não rotula a própria confiança nem arbitra a própria contradição — as duas coisas seriam perguntar ao réu se ele é culpado."</em></p>
+    <h3>O carimbo de base</h3>
+    <p>Cada eixo do placar recebe um selo dizendo de onde a nota veio: <code>medido</code>, <code>misto</code>, <code>julgamento</code> ou <code>julgamento-circular</code>. O carimbo é escrito pelo código, nunca pelo modelo.</p>
+    <p>O caso <code>julgamento-circular</code> é a ideia mais fina do módulo: o eixo "Autenticidade ao estágio" pergunta se o polimento da página é honesto para o estágio da empresa. Quando o estágio é inferido <em>da própria página</em>, a pergunta vira "esta página é coerente consigo mesma" — sempre sim, e portanto sem informação. A tela diz isso ao usuário em vez de esconder.</p>
+    <h3>Os tetos</h3>
+    <p>Se existe um achado P0, "Conversão" não pode passar de 4; com P1, de 6,5. Sem essa regra, a mesma tela mostra "Conversão: 7" no placar e, três seções abaixo, um defeito bloqueante no funil — dois vereditos contraditórios sobre a mesma coisa, e nenhum motivo para acreditar em qualquer um dos dois. Há ainda um veto: Clareza ≤ 4 limita a nota final a 4, porque quebrado o elo da clareza, os de baixo não existem.</p>
+    <div class="nota risco"><span class="rotulo">o buraco conhecido</span>
+    <p>A nota final é o único campo que ninguém confronta com os eixos. <code>reconcileScores</code> trata <code>report.finalScore</code> como autoritativo e só o toca para descontar um eixo que ele mesmo rebaixou. É o defeito nº 01 do <a href="tecnico.html">relatório técnico</a> — e é estrutural, não um bug de digitação: todo o resto do módulo existe para não perguntar ao réu, menos esse campo.</p></div>
+  </div></div>
+</section>
+
+<section id="p6">
+  <div class="cabeca"><span class="n">06</span>
+    <div><h2>O lacre e o corte grátis/pago</h2>
+    <p class="resumo">Sem banco, sem sessão, sem estado no servidor — e mesmo assim o cliente não consegue abrir o que não pagou.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><span class="ref">lib/token.ts</span> substituiu um store em memória que não sobrevive a serverless: cada função pode rodar num processo diferente, e a auditoria criada numa requisição sumia na seguinte — "às vezes funciona" é pior que falhar sempre.</p>
+    <p>A solução: o relatório inteiro volta ao cliente <strong>cifrado</strong> (AES-256-GCM, com gzip antes porque passa de 15 KB). O cliente guarda, devolve para destravar ou baixar, e o servidor decifra. A chave nunca sai do servidor, e a redação também acontece lá — abrir o DevTools não adianta. Validade de 24 h.</p>
+    <p>A redação é <span class="ref">lib/store.ts</span>, e a regra de produto está escrita nele: o grátis <em>nomeia</em> o defeito e mostra a evidência medida, porque a pessoa precisa acreditar que o problema existe; o pago entrega a <em>cura</em> — prescrição, antes/depois, copy e verificação. A prévia mostra até dois itens: os bloqueantes e, faltando um, o de menor esforço.</p>
+    <div class="nota risco"><span class="rotulo">onde o corte vaza hoje</span>
+    <p>A função enumera os campos a apagar em vez de partir de uma lista de permissão — então campo novo nasce <strong>liberado</strong>. Foi o que aconteceu com <code>moves</code> (a prescrição em forma de lista), e vale também para <code>headlineScan.verdict</code> e <code>outOfScope</code>. Defeito nº 03 do relatório técnico.</p></div>
+    <p>O mesmo lacre carrega o carimbo de cota da captura, e <code>/api/judge</code> o lê para admitir sem recobrar. Uma chave de uso único no Upstash impede que o mesmo lacre seja julgado duas vezes — anti-replay para a metade cara.</p>
+  </div></div>
+</section>
+
+<section id="p7">
+  <div class="cabeca"><span class="n">07</span>
+    <div><h2>Persistência</h2>
+    <p class="resumo">A auditoria só vira linha no banco quando alguém reivindica. Antes disso, ela é efêmera de propósito.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p>Oito tabelas em Postgres (Neon serverless), via Drizzle:</p>
+    <div class="tabela-env"><table>
+      <thead><tr><th>tabela</th><th>papel</th></tr></thead>
+      <tbody>
+        <tr><td class="n">users</td><td>o que o Clerk não sabe: plano, papel, estado. Nasce por upsert preguiçoso na primeira escrita autenticada — não por webhook, que seria mais um segredo, mais um endpoint e mais um modo de falha silenciosa</td></tr>
+        <tr><td class="n">projects</td><td>um domínio</td></tr>
+        <tr><td class="n">pages</td><td>um caminho dentro do domínio — a unidade que o diff compara</td></tr>
+        <tr><td class="n">runs</td><td>uma execução: relatório em JSONB, nota, origem (<code>first</code> / <code>reaudit</code> / <code>claimed</code>)</td></tr>
+        <tr><td class="n">run_diffs</td><td>a comparação já calculada, com a versão do algoritmo gravada</td></tr>
+        <tr><td class="n">shares</td><td>link público de um run ou de um diff</td></tr>
+        <tr><td class="n">admin_audit_logs</td><td>toda mutação administrativa</td></tr>
+        <tr><td class="n">anon_audit_events</td><td>telemetria do funil sem conta: domínio + desfecho</td></tr>
+      </tbody>
+    </table></div>
+    <p>Projeto e página são criados sob demanda no ato de reivindicar, com <code>onConflictDoUpdate</code> — auditar de novo a mesma URL cai na mesma linha do tempo em vez de criar um projeto gêmeo.</p>
+    <p>Uma decisão de leitura que vale citar: <span class="ref">lib/queries.ts</span> nunca seleciona <code>runs.report</code>. É uma coluna JSONB de ~15 KB que o Postgres guarda em TOAST comprimido; um <code>select *</code> a descomprimiria só para desenhar uma lista que precisa da nota. Ela só é lida na tela do relatório.</p>
+    <p>As fotos vão para o Vercel Blob no momento da reivindicação. Quando faltam, o run é gravado assim mesmo e marcado <code>degraded: "sem-captura"</code> — caminho de produção suportado, não um erro.</p>
+  </div></div>
+</section>
+
+<section id="p8">
+  <div class="cabeca"><span class="n">08</span>
+    <div><h2>O diff</h2>
+    <p class="resumo">Duas camadas com regras opostas — e a regra da qual tudo pende: ausência não prova nada.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p><span class="ref">lib/diff.ts</span> lê do banco, não do lacre: sem limite de tamanho, sem expiração, sem o cliente no meio. E grava o resultado, porque a tela de comparação é o produto e não pode custar nada por visita.</p>
+    <h3>Camada medida</h3>
+    <p><span class="ref">lib/diff-metrics.ts</span>: números contra números, sem modelo nenhum. A regra que governa tudo é <strong>na dúvida, "não comparável"</strong> — nunca "melhorou". Uma medição feita por amostra, ou sobre captura que não conseguiu ler o CSS, não é um número menor: é um número que não quer dizer a mesma coisa que o outro. Há também um piso de ruído — variação pequena demais não vira ganho.</p>
+    <h3>Camada de achados</h3>
+    <p><span class="ref">lib/diff-findings.ts</span> abre com a regra em caixa alta: <em>um achado NUNCA é resolvido por estar ausente na execução nova.</em> O julgamento é não-determinístico — a mesma página auditada duas vezes produz listas diferentes, e existe até um script (<code>scripts/variance.ts</code>) só para medir isso. Um achado pode sumir porque o modelo amostrou diferente, não porque alguém consertou.</p>
+    <p>Resolver exige verificação <strong>positiva</strong>: um número medido cruzando o alvo, ou o texto literal anterior tendo desaparecido da página. Ausência vira <code>não verificável</code>. E há veto: se o texto apontado ainda está lá, o achado <code>persiste</code>, diga o modelo o que disser.</p>
+    <div class="nota"><span class="rotulo">por que isso é o coração do produto</span>
+    <p>A promessa de retenção é "prove que consertou". Se o diff aceitasse ausência como prova, ele diria "resolvido" para quem não mexeu em nada — e uma única vez que isso acontecesse com um cliente atento derrubaria a credibilidade do relatório inteiro. As duas camadas existem para que o produto prefira dizer "não sei" a dizer uma coisa bonita e errada.</p></div>
+  </div></div>
+</section>
+
+<section id="p9">
+  <div class="cabeca"><span class="n">09</span>
+    <div><h2>Conta, plano e cota</h2>
+    <p class="resumo">Identidade alugada, entitlement próprio, e uma proteção que falha aberto de propósito.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p>A identidade é do Clerk. O <code>middleware.ts</code> tem um comentário que merece leitura por qualquer um que vá mexer: <strong>ele não protege rotas</strong> — só faz <code>auth()</code> funcionar dentro delas. A proteção mora em cada página e cada rota, com <code>await auth()</code> e toda consulta filtrando por <code>userId</code>. O raciocínio: proteção por casamento de caminho depende de a lista de padrões acompanhar o roteamento, e quando os dois divergem sobra um recurso protegido alcançável. Filtrar a consulta protege o <em>dado</em>, não o <em>caminho</em> — trocar um id na URL não revela a página de outra conta.</p>
+    <p>Há um aviso explícito no mesmo comentário: <code>/api/capture</code> e <code>/api/judge</code> respondem <code>text/event-stream</code> por até 200 e 300 segundos, e middleware na frente de stream longo é exatamente o que funciona em <code>next dev</code> e bufferiza em produção.</p>
+    <h3>Planos</h3>
+    <p><span class="ref">lib/plans.ts</span>: não há cobrança. O plano nasce <code>free</code> e sobe à mão — mas os limites são aplicados de verdade desde já, porque construir a cobrança antes de existir demanda comprovada seria construir a parte cara antes da parte que prova que ela vale. Quando o pagamento entrar, muda uma coluna.</p>
+    <p>Uma sutileza de produto no mesmo arquivo: reauditoria tem cota <em>separada</em> da auditoria nova. Com cota única, a pessoa bateria no limite exatamente no momento de ver o valor que a faria pagar — cobrar pela reauditoria é cobrar pelo próprio gancho de retenção.</p>
+    <h3>Cota anônima</h3>
+    <p><span class="ref">lib/limits.ts</span>, janela deslizante no Upstash, chaveada por IP. Só IP, sem impressão digital do navegador: fingerprint seguraria melhor, mas coleta sinais do dispositivo de quem só queria ver o produto, e o ganho não paga esse preço num limite cujo objetivo é conter laço automatizado, não perseguir quem usa duas vezes. Sem KV configurado, <strong>falha aberto</strong> — variável de ambiente ausente não pode derrubar o produto.</p>
+    <div class="nota risco"><span class="rotulo">os dois defeitos daqui</span>
+    <p>A cota é debitada antes da captura e nunca estornada, enquanto a tela de erro promete "crédito não consumido" (nº 02). E a frase de conversão escrita com cuidado neste módulo é descartada pela rota, que manda um erro genérico (nº 08). Os dois no <a href="tecnico.html">relatório técnico</a>.</p></div>
+  </div></div>
+</section>
+
+<section id="p10">
+  <div class="cabeca"><span class="n">10</span>
+    <div><h2>Idiomas</h2>
+    <p class="resumo">Cinco dicionários completos, e duas camadas de tradução que resolvem problemas diferentes.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <p>A interface é traduzida por dicionários tipados: <code>en</code> é o canônico e os outros quatro — <code>es</code>, <code>de</code>, <code>zh</code>, <code>pt-BR</code> — implementam o mesmo tipo por inteiro, de modo que o TypeScript impede chave ausente. Acrescentar idioma são três passos declarados no topo de <span class="ref">lib/i18n/config.ts</span>.</p>
+    <p>O <strong>relatório</strong> é outro problema: a prosa é gerada pelo modelo no idioma pedido, e traduzir depois exige saída estruturada com validação atômica — daí <span class="ref">lib/report-localization.ts</span>, 566 linhas, a maior peça de i18n do repositório. <code>lib/detect-locale.ts</code> cobre relatórios legados, gravados antes de o campo de idioma existir.</p>
+    <p>Detalhe fino de produto: a copy literal da página auditada é preservada no canônico e traduzida só na apresentação — citar o H1 do site em tradução seria inventar evidência.</p>
+  </div></div>
+</section>
+
+<section id="p11">
+  <div class="cabeca"><span class="n">11</span>
+    <div><h2>Plataforma e limites</h2>
+    <p class="resumo">A forma do app é, em boa parte, a forma do que a Vercel permite.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <div class="tabela-env"><table>
+      <thead><tr><th>recurso</th><th>configuração</th><th>por quê</th></tr></thead>
+      <tbody>
+        <tr><td class="n">/api/capture</td><td class="n">2048 MB · 200 s</td><td>Chromium serverless é grande e lento</td></tr>
+        <tr><td class="n">/api/judge</td><td class="n">1024 MB · 300 s</td><td>a escada pode tentar vários modelos em sequência</td></tr>
+        <tr><td class="n">separação</td><td class="n">duas rotas</td><td>captura e julgamento juntos não cabem em um único limite</td></tr>
+        <tr><td class="n">transporte</td><td class="n">SSE</td><td>a auditoria leva minutos: a tela precisa de etapa, não de espera</td></tr>
+      </tbody>
+    </table></div>
+    <p>O SSE tem uma consequência que atravessa o cliente inteiro: <code>readStream</code> varre <strong>apenas</strong> linhas <code>data:</code> e ignora o status HTTP. Por isso as rotas devolvem erro <em>como evento</em>, nunca como 4xx — um 422 com JSON produziria zero eventos e a pessoa leria "a captura terminou sem devolver a página" no lugar do motivo real.</p>
+    <p>Renderização: as telas da área logada são <strong>server components</strong> que consultam o Postgres diretamente, sem passar por rota de API. É rápido e simples, e tem um efeito de arquitetura que só aparece quando se pensa em trocar o backend — nove páginas são clientes do banco tanto quanto as 20 rotas.</p>
+  </div></div>
+</section>
+
+<section id="costuras">
+  <div class="cabeca"><span class="n">—</span>
+    <div><h2>Onde a arquitetura aceita troca de peça</h2>
+    <p class="resumo">Se a pergunta for "por onde eu assumo o controle", estas são as costuras reais.</p></div>
+  </div>
+  <div class="corpo"><div class="vazio"></div><div>
+    <ul>
+      <li><strong>O julgamento é uma função pura</strong> — <code>Capture → Report</code>. É a peça com a fronteira mais limpa do sistema, e hoje o endereço do OpenRouter está fixo no código. Transformá-lo em variável de ambiente é uma linha, e passa a permitir apontar para outro serviço que fale o mesmo formato — em qualquer linguagem — sem tocar em rota, auth ou banco.</li>
+      <li><strong>A skill é dado, não código</strong> — <code>skill/SKILL.md</code> é lido em runtime. Mudar o critério de auditoria não exige deploy de lógica.</li>
+      <li><strong>A escada de modelos é catálogo</strong> — montada em runtime, com um modelo fixável por variável de ambiente.</li>
+      <li><strong>O diff tem versão gravada</strong> — mudar o algoritmo invalida os diffs antigos sem apagar nenhum: o guardado continua legível, mas deixa de ser servido como se tivesse saído das regras de hoje.</li>
+    </ul>
+    <p>E as costuras que <em>não</em> existem, e que qualquer plano de reescrita precisa encarar: o schema do banco vive em TypeScript e é lido direto por server components; o Clerk está no middleware e em oito componentes; a captura depende de um Chromium empacotado para o ambiente serverless específico da Vercel.</p>
+  </div></div>
+</section>
+
+<div class="fecho">
+  <span class="rotulo">a leitura de quem passou o dia aqui dentro</span>
+  <p>Esta é uma arquitetura madura para o tamanho dela. A separação medido/julgado é sustentada em quatro lugares independentes — medição, carimbo de base, tetos e as duas camadas do diff — e é isso que dá ao produto o direito de chamar a saída de veredito em vez de opinião. Os comentários carregam o <em>porquê</em> das decisões com um nível de honestidade raro, incluindo as que deram errado antes.</p>
+  <p>O ponto fraco é consistente e nomeável: <strong>o sistema confia em si mesmo onde não instalou um conferente</strong>. A nota final não é confrontada com os eixos; a redação enumera o que esconder em vez do que mostrar; a cota é debitada sem caminho de estorno. São três instâncias do mesmo padrão — e as três correções são pequenas, porque a estrutura para recebê-las já existe.</p>
+</div>
+
+<div class="irmao">
+  <span class="rotulo">as outras duas páginas</span>
+  <p><a href="tecnico.html">Relatório técnico</a> — os 12 defeitos com evidência medida, arquivo:linha e correção proposta.</p>
+  <p><a href="index.html">Relatório em linguagem simples</a> — os mesmos defeitos, sem termos técnicos.</p>
+</div>
+
+</div>
+</body>
+</html>
