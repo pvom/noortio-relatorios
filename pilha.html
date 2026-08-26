@@ -114,7 +114,7 @@
     <h2>MVP — custo fixo zero</h2>
     <span class="preco-fase">US$ 0/mês</span>
   </div>
-  <p class="gatilho"><b>Vale enquanto:</b> não há cliente pagante. <b>Único custo variável:</b> o julgamento, ~US$ 0,008 por auditoria — 500 auditorias no mês dão <b>US$ 4</b>.</p>
+  <p class="gatilho"><b>Vale enquanto:</b> não há cliente pagante. <b>Único custo variável:</b> o julgamento com Haiku 4.5, ~US$ 0,031 por auditoria com cache — 500 auditorias no mês dão <b>US$ 16</b>.</p>
 
   <div class="tabela-env"><table>
     <thead><tr><th>função</th><th>motor</th><th>custo</th><th>limite / tradeoff</th></tr></thead>
@@ -128,7 +128,7 @@
       <tr><td class="nome">SEO de campo</td><td>Search Console API</td><td class="n zero">US$ 0</td><td>só para cliente que verifica a propriedade — logo, puxa cadastro</td></tr>
       <tr><td class="nome">performance premium</td><td>WebPageTest — camada gratuita</td><td class="n zero">US$ 0</td><td>300 testes/mês. Reservar para relatório de destaque, não gastar no anônimo</td></tr>
       <tr><td class="nome">plano B de captura</td><td>Firecrawl — camada gratuita</td><td class="n zero">US$ 0</td><td>1.000 créditos/mês; já integrado</td></tr>
-      <tr><td class="nome">julgamento</td><td>OpenRouter</td><td class="n paga">~US$ 0,008<br>por auditoria</td><td><strong>o único custo obrigatório.</strong> Os degraus gratuitos estão quebrados hoje (429 e respostas incompletas, medido em <code>lib/models.ts</code>)</td></tr>
+      <tr><td class="nome">julgamento</td><td><strong>Claude Haiku 4.5</strong> fixado<br><span class="rotulo">via OpenRouter ou API direta</span></td><td class="n paga">~US$ 0,031–0,039<br>por auditoria</td><td><strong>o único custo obrigatório</strong> — e o que elimina o modo de falha que matou dez auditorias seguidas. Ver a secção abaixo</td></tr>
       <tr><td class="nome">infra</td><td>Vercel hobby · Neon · Upstash · Blob · Clerk</td><td class="n zero">US$ 0</td><td>camadas gratuitas; já em uso</td></tr>
     </tbody>
   </table></div>
@@ -141,6 +141,47 @@
   <div class="nota risco">
     <span class="rotulo">a conta que precisa ser paga hoje</span>
     <p>A chave do OpenRouter está <strong>zerada</strong> (US$ 30 de crédito, US$ 30,06 consumidos). Enquanto não recarregar, toda auditoria morre no julgamento — foi o que aconteceu nas dez tentativas. Não é assinatura: é crédito pré-pago que dura ~1.250 auditorias a cada US$ 10.</p>
+  </div>
+</section>
+
+<section class="fase">
+  <div class="fase-cabeca">
+    <span class="fase-n">modelo</span>
+    <h2>Por que fixar o Haiku 4.5</h2>
+    <span class="preco-fase">~US$ 0,031<br>por auditoria</span>
+  </div>
+  <p class="gatilho">A escada de modelos foi desenhada para poupar. Hoje ela não poupa: ela <b>quebra</b> — e custa mais caro do que parece.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>modelo</th><th>preço</th><th>por auditoria</th><th>leitura</th></tr></thead>
+    <tbody>
+      <tr><td class="nome">escada atual</td><td class="n">grátis → resgate pago</td><td class="n">~US$ 0,008</td><td>o mais barato no papel. Na prática, os quatro degraus <code>:free</code> devolvem 429, resposta incompleta ou nada — e o resgate pago falha sem crédito</td></tr>
+      <tr><td class="nome">Claude Haiku 4.5</td><td class="n">US$ 1 / US$ 5<br>por milhão</td><td class="n"><strong>US$ 0,039</strong><br>US$ 0,031 com cache</td><td>200K de contexto, aceita imagem, um modelo só — <strong>determinismo e fim da escada quebrada</strong></td></tr>
+      <tr><td class="nome">Haiku 4.5 em lote</td><td class="n">US$ 0,50 / US$ 2,50</td><td class="n">US$ 0,020</td><td>metade do preço, mas assíncrono: serve para <code>npm run rejudge</code>, não para auditoria interativa</td></tr>
+      <tr><td class="nome">Claude Sonnet 5</td><td class="n">US$ 2 / US$ 10</td><td class="n">US$ 0,079</td><td>o dobro do Haiku. Vale como <strong>segundo degrau</strong>, não como padrão</td></tr>
+      <tr><td class="nome">Claude Opus 5</td><td class="n">US$ 5 / US$ 25</td><td class="n">US$ 0,197</td><td>25× o custo atual. Só se a qualidade do julgamento provar que compensa, medida com o harness de eval</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <span class="rotulo">de onde saem estes números</span>
+    <p>Payload real de uma auditoria: system prompt de <strong>31,5 KB</strong> (<code>SKILL.md</code> + catálogo de AI tells) ≈ 8.800 tokens, mais três imagens — dobra desktop 1440×900 (1.728 tokens), página inteira reduzida ao teto de 1568px (924) e dobra mobile (406) — mais as medições. <strong>Entrada ≈ 14.300 tokens, saída ≈ 5.000.</strong> Estimativa: confirmar com <code>count_tokens</code> antes de fechar orçamento.</p>
+  </div>
+
+  <div class="nota risco">
+    <span class="rotulo">o que isto custa — dito sem maquiagem</span>
+    <p>Fixar o Haiku é <strong>cinco vezes</strong> o custo nominal de hoje: US$ 39 por mil auditorias em vez de US$ 8. Não é economia — é <strong>confiabilidade comprada</strong>. E o preço de referência de US$ 0,008 é teórico: ele pressupõe uma escada gratuita que, medida, não entrega.</p>
+  </div>
+
+  <div class="nota bom">
+    <span class="rotulo">o que se ganha por esses trinta e um dólares</span>
+    <p><strong>Um modelo fixo destrava o cache de prompt.</strong> A escada não pode cachear — o modelo muda a cada degrau, e cache é casamento de prefixo. Com o Haiku fixado, os 8.800 tokens do system prompt passam a ser lidos a 0,1× do preço, e a conta cai de US$ 0,039 para US$ 0,031.</p>
+    <p>E acaba o modo de falha: hoje a auditoria morre quando os quatro degraus gratuitos falham em sequência. Com um degrau que funciona, ela não morre.</p>
+  </div>
+
+  <div class="nota">
+    <span class="rotulo">a escada que eu manteria</span>
+    <p>Dois degraus, ambos funcionais: <strong>Haiku 4.5</strong> como padrão, e <strong>Sonnet 5</strong> só quando o piso de qualidade reprovar o Haiku duas vezes (a passada de correção dirigida já existe em <code>lib/judge.ts</code>). Custo esperado perto de US$ 0,031, com teto de US$ 0,079 nos casos difíceis — e nenhum degrau que responde 429.</p>
   </div>
 </section>
 
@@ -202,7 +243,8 @@
     <thead><tr><th>entra</th><th>custo</th><th>o que compra</th><th>tradeoff</th></tr></thead>
     <tbody>
       <tr><td class="nome">Mapa de atenção<br><span class="rotulo">Attention Insight ou similar</span></td><td class="n paga">~US$ 0,96–1,15<br>por relatório</td><td><strong>o único motor que cria um eixo medido onde hoje há julgamento</strong>: o teste dos 5 segundos deixa de ser opinião do modelo e passa a ter mapa de calor</td><td>125× o custo de uma auditoria inteira. Piloto de US$ 23 dá 20 créditos para decidir com dado</td></tr>
-      <tr><td class="nome">Fora-de-página<br><span class="rotulo">DataForSEO ou Ahrefs</span></td><td class="n paga">por uso, ou US$ 129/mês</td><td>backlinks e autoridade — dado que nenhum crawler próprio obtém</td><td>só quando um cliente pedir; é o item mais caro por valor entregue</td></tr>
+      <tr><td class="nome">Suite de SEO<br><span class="rotulo">SE Ranking Core</span></td><td class="n paga">~US$ 103/mês anual<br>(US$ 129 mensal)<br>25.000 créditos</td><td><strong>o "premium sem ser caro"</strong>: SERP, palavra-chave, backlink, domínio e auditoria numa assinatura só, com API <em>e</em> MCP inclusos em todo plano — não vendidos à parte</td><td>mais barato que o Ahrefs Lite e com API embutida. Custo previsível: não há fatura variável para reconciliar</td></tr>
+      <tr><td class="nome">Fora-de-página puro<br><span class="rotulo">DataForSEO ou Ahrefs</span></td><td class="n paga">por uso, ou US$ 129/mês</td><td>backlinks e autoridade sem assinatura de suite</td><td>o DataForSEO ganha quando o uso é irregular: mês sem consulta custa zero</td></tr>
     </tbody>
   </table></div>
 </section>
@@ -219,17 +261,18 @@
   <div class="tabela-env"><table>
     <thead><tr><th>auditorias/mês</th><th>fase 0</th><th>fase 1</th><th>fase 2</th><th>observação</th></tr></thead>
     <tbody>
-      <tr><td class="n">100</td><td class="n zero">US$ 0,80</td><td class="n">US$ 20,80</td><td class="n">US$ 40</td><td>fase 0 basta com folga</td></tr>
-      <tr><td class="n">500</td><td class="n zero">US$ 4</td><td class="n">US$ 24</td><td class="n">US$ 43</td><td>ainda dentro das camadas gratuitas</td></tr>
-      <tr><td class="n">1.000</td><td class="n paga">US$ 8</td><td class="n">US$ 28</td><td class="n">US$ 47</td><td><strong>o teto da fase 0</strong> — o Browserless gratuito acaba aqui</td></tr>
-      <tr><td class="n">5.000</td><td class="n">—</td><td class="n">US$ 60</td><td class="n">US$ 79</td><td>fase 1 obrigatória; ainda US$ 0,012 por auditoria</td></tr>
-      <tr><td class="n">20.000</td><td class="n">—</td><td class="n">US$ 180</td><td class="n">US$ 199</td><td>US$ 0,010 por auditoria — a curva melhora com escala</td></tr>
+      <tr><td class="n">100</td><td class="n zero">US$ 3</td><td class="n">US$ 23</td><td class="n">US$ 42</td><td>fase 0 basta com folga</td></tr>
+      <tr><td class="n">500</td><td class="n zero">US$ 16</td><td class="n">US$ 36</td><td class="n">US$ 55</td><td>ainda dentro das camadas gratuitas</td></tr>
+      <tr><td class="n">1.000</td><td class="n paga">US$ 31</td><td class="n">US$ 51</td><td class="n">US$ 70</td><td><strong>o teto da fase 0</strong> — o Browserless gratuito acaba aqui</td></tr>
+      <tr><td class="n">5.000</td><td class="n">—</td><td class="n">US$ 175</td><td class="n">US$ 194</td><td>fase 1 obrigatória. O modelo é 89% da conta</td></tr>
+      <tr><td class="n">20.000</td><td class="n">—</td><td class="n">US$ 640</td><td class="n">US$ 659</td><td>aqui vale medir se o Haiku em lote resolve parte do volume</td></tr>
     </tbody>
-  </table></div>
+    </table></div>
 
   <div class="nota bom">
     <span class="rotulo">a leitura da tabela</span>
-    <p>Até <strong>1.000 auditorias por mês</strong>, o custo fixo é zero e a conta inteira cabe em <strong>oito dólares</strong>. Isso não é um MVP capado: é a pilha completa da fase 0, com PSI, CrUX, axe-core e APCA. A excelência aqui não é comprada — é integrada.</p>
+    <p>Até <strong>1.000 auditorias por mês</strong>, o custo fixo continua <strong>zero</strong> — a conta inteira é o modelo, US$ 31. Todo o resto da pilha da fase 0 (PSI, CrUX, axe-core, APCA, browser, plano B) é gratuito. A excelência aqui não é comprada; o que se paga é o julgamento, e ele passou a ser confiável.</p>
+    <p><strong>O modelo é 80–90% da conta em qualquer volume.</strong> É lá que uma otimização vale a pena — cache de prompt (já contabilizado), lote para o <code>rejudge</code>, e recortar o contexto por avaliador se o leque de subagentes for adiante. Nenhuma assinatura desta página chega perto desse peso.</p>
   </div>
 </section>
 
@@ -263,7 +306,8 @@
     <span class="preco-fase"></span>
   </div>
   <ol class="ordem">
-    <li><strong>Recarregar o OpenRouter.</strong> Sem isso nada funciona — nem hoje, nem em nenhuma fase. É crédito, não assinatura.</li>
+    <li><strong>Recarregar o OpenRouter</strong> (ou abrir conta direta na Anthropic). Sem isso nada funciona — nem hoje, nem em nenhuma fase. É crédito, não assinatura.</li>
+    <li><strong>Fixar o Haiku 4.5 e ligar o cache de prompt.</strong> Uma variável de ambiente (<code>AUDIT_MODEL_PINNED</code>) mais o cache. Acaba a escada quebrada, e o custo fica previsível.</li>
     <li><strong>Corrigir os quatro P0.</strong> Custo zero, e é o que impede que todo o resto amplifique um defeito.</li>
     <li><strong>axe-core.</strong> Meia tarde, zero de custo, zero de latência, e cada achado de acessibilidade passa a citar critério.</li>
     <li><strong>PSI + CrUX em paralelo com a captura.</strong> Substitui a métrica mais frágil do relatório por uma padronizada, mais dado de usuário real. Zero.</li>
