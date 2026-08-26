@@ -51,13 +51,13 @@
   p{max-width:68ch}
 
   .tabela-env{overflow-x:auto;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule-forte);margin:0 0 1rem}
-  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:46rem}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:42rem;table-layout:auto}
   th,td{text-align:left;padding:.65rem 1.1rem .65rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
   tr:last-child td{border-bottom:0}
   th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);font-weight:400;text-transform:lowercase;white-space:nowrap}
-  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:normal}
   td.nome{font-weight:600;white-space:nowrap}
-  .vd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;white-space:nowrap}
+  .vd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.04em;white-space:nowrap;padding-right:1.4rem}
   .sim{color:var(--baixo)} .talvez{color:var(--medio)} .nao{color:var(--alto)} .neutro{color:var(--ink-3)}
   .legenda-tab{font-size:.85rem;color:var(--ink-3);margin:0 0 1.5rem}
 
@@ -112,35 +112,41 @@
   <p class="resumo">É onde a medição atual é mais fraca: uma carga única, sem throttling, medida da rede do servidor. Também é onde existe a melhor opção gratuita do mercado.</p>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>por auditoria</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">PageSpeed Insights API</td>
+        <td class="vd sim">adotar</td>
         <td class="n">grátis · 25.000/dia</td>
         <td class="n">US$ 0,00</td>
         <td>laboratório com throttling padronizado + <strong>dados de campo do CrUX</strong> (usuários reais). Roda na infra do Google — zero Chromium do vosso lado</td>
-        <td class="vd sim">adotar</td>
       </tr>
       <tr>
         <td class="nome">CrUX API / BigQuery</td>
+        <td class="vd sim">adotar</td>
         <td class="n">grátis</td>
         <td class="n">US$ 0,00</td>
         <td>campo bruto por origem e por URL; permite comparar o cliente com a mediana da categoria</td>
-        <td class="vd sim">adotar</td>
       </tr>
       <tr>
         <td class="nome">WebPageTest (Catchpoint)</td>
+        <td class="vd talvez">só no plano pago</td>
         <td class="n">grátis 300/mês<br>Pro ~US$ 15–18,75/mês (1.000 testes)</td>
         <td class="n">~US$ 0,019</td>
         <td>dispositivos e redes reais, múltiplas localidades, filmstrip e waterfall. É o padrão-ouro de evidência</td>
-        <td class="vd talvez">só no plano pago</td>
       </tr>
       <tr>
         <td class="nome">DebugBear</td>
+        <td class="vd nao">encaixe errado</td>
         <td class="n">a partir de US$ 49–79/mês</td>
         <td class="n">≥ US$ 0,05</td>
         <td>Lighthouse + CWV monitorados, com histórico e alertas</td>
-        <td class="vd nao">encaixe errado</td>
       </tr>
     </tbody>
   </table></div>
@@ -163,28 +169,34 @@
   <p class="resumo">Hoje o contraste é medido por código próprio. Existe um motor open source que é o padrão do setor — e que roda dentro da página que vocês já têm aberta.</p>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>por auditoria</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">axe-core (Deque)</td>
+        <td class="vd sim">adotar</td>
         <td class="n">open source (MPL-2.0)</td>
         <td class="n">US$ 0,00</td>
         <td>~90 regras WCAG com ID de regra e critério citável. Injetável junto do <code>measureInPage</code>: sem navegação extra, milissegundos</td>
-        <td class="vd sim">adotar</td>
       </tr>
       <tr>
         <td class="nome">WAVE API (WebAIM)</td>
+        <td class="vd nao">não compensa</td>
         <td class="n">US$ 0,025–0,04 por crédito<br>(1 crédito = 1 página)<br>licença fixa: US$ 4.000/ano por 100k</td>
         <td class="n">~US$ 0,03</td>
         <td>relatório com nome reconhecido no mundo de acessibilidade</td>
-        <td class="vd nao">não compensa</td>
       </tr>
       <tr>
         <td class="nome">IBM Equal Access</td>
+        <td class="vd neutro">redundante</td>
         <td class="n">open source</td>
         <td class="n">US$ 0,00</td>
         <td>segunda opinião sobre as mesmas regras</td>
-        <td class="vd neutro">redundante</td>
       </tr>
     </tbody>
   </table></div>
@@ -201,35 +213,41 @@
   <p class="resumo">O motor de on-page é próprio e bom: 13 códigos com pesos declarados e um estado "não sei" honesto. O que falta é fora-de-página — e aí os preços saltam.</p>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>por auditoria</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">Google Search Console API</td>
+        <td class="vd sim">adotar no logado</td>
         <td class="n">grátis</td>
         <td class="n">US$ 0,00</td>
         <td>impressões, cliques, consultas e posição <strong>reais</strong> da página auditada</td>
-        <td class="vd sim">adotar no logado</td>
       </tr>
       <tr>
         <td class="nome">DataForSEO</td>
+        <td class="vd talvez">avaliar</td>
         <td class="n">pré-pago, depósito mínimo US$ 50<br><em>preço por requisição não confirmado</em></td>
         <td class="n">verificar</td>
         <td>SERP, on-page e backlinks por chamada, sem assinatura</td>
-        <td class="vd talvez">avaliar</td>
       </tr>
       <tr>
         <td class="nome">Ahrefs API v3</td>
+        <td class="vd talvez">só no plano alto</td>
         <td class="n">a partir do Lite US$ 129/mês<br>(10k unidades; excedente US$ 0,35–1,00 / 1.000 linhas)</td>
         <td class="n">≥ US$ 0,13</td>
         <td>backlinks, autoridade, tráfego estimado — dado que nenhum crawler próprio obtém</td>
-        <td class="vd talvez">só no plano alto</td>
       </tr>
       <tr>
         <td class="nome">Semrush / Moz API</td>
+        <td class="vd neutro">alternativas ao acima</td>
         <td class="n">assinatura + unidades</td>
         <td class="n">comparável</td>
         <td>métricas proprietárias de autoridade</td>
-        <td class="vd neutro">alternativas ao acima</td>
       </tr>
     </tbody>
   </table></div>
@@ -245,35 +263,41 @@
   <p class="resumo">É a categoria que mais diferencia — e a única em que o preço por auditoria supera o custo do produto inteiro.</p>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>por auditoria</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">Attention Insight</td>
+        <td class="vd talvez">só no relatório premium</td>
         <td class="n">Solo US$ 23/mês (20 créditos)<br>Team US$ 479/mês (500 créditos)<br>1 crédito = 1 URL/imagem</td>
         <td class="n">~US$ 0,96–1,15</td>
         <td>mapa de calor preditivo de atenção — transforma o <strong>teste dos 5 segundos</strong> de julgamento em medição</td>
-        <td class="vd talvez">só no relatório premium</td>
       </tr>
       <tr>
         <td class="nome">Neurons / Expoze.io</td>
+        <td class="vd talvez">alternativas</td>
         <td class="n">faixa comparável</td>
         <td class="n">~US$ 1</td>
         <td>mesma categoria; vale comparar acurácia declarada</td>
-        <td class="vd talvez">alternativas</td>
       </tr>
       <tr>
         <td class="nome">APCA (<code>apca-w3</code>)</td>
+        <td class="vd sim">adotar</td>
         <td class="n">open source</td>
         <td class="n">US$ 0,00</td>
         <td>o algoritmo de contraste candidato ao WCAG 3, ao lado do ratio 2.x</td>
-        <td class="vd sim">adotar</td>
       </tr>
       <tr>
         <td class="nome">Applitools / Percy</td>
+        <td class="vd nao">outro problema</td>
         <td class="n">assinatura</td>
         <td class="n">—</td>
         <td>regressão visual entre versões</td>
-        <td class="vd nao">outro problema</td>
       </tr>
     </tbody>
   </table></div>
@@ -290,28 +314,34 @@
   <p class="resumo">A queixa original era o peso do Chromium. Medido, ele leva 2–6 s. O que pesa é subi-lo frio a cada invocação numa função serverless.</p>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>por auditoria</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">Browserbase</td>
+        <td class="vd sim">adotar</td>
         <td class="n">Developer US$ 20/mês<br>100 h incluídas, depois US$ 0,12/h</td>
         <td class="n">~US$ 0,0002</td>
         <td>pool de browsers quentes com endpoint CDP, stealth e captcha. 100 h ≈ <strong>72.000 capturas</strong> de 5 s</td>
-        <td class="vd sim">adotar</td>
       </tr>
       <tr>
         <td class="nome">Browserless</td>
+        <td class="vd sim">alternativa</td>
         <td class="n">grátis 1.000 unidades/mês<br>Prototyping ~US$ 25/mês</td>
         <td class="n">1 unidade (≤30 s)</td>
         <td>mesma ideia; unidade é bloco de 30 s de browser</td>
-        <td class="vd sim">alternativa</td>
       </tr>
       <tr>
         <td class="nome">Firecrawl <em>(já no stack)</em></td>
+        <td class="vd sim">manter</td>
         <td class="n">grátis 1.000 créditos<br>Standard US$ 83/mês (100k)</td>
         <td class="n">US$ 0,0008<br>US$ 0,004 em modo stealth</td>
         <td>plano B para site que barra o navegador próprio. Já integrado</td>
-        <td class="vd sim">manter</td>
       </tr>
     </tbody>
   </table></div>
@@ -333,70 +363,76 @@
   </div>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>motor</th><th>preço</th><th>varredura de 500 páginas</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <thead><tr>
+        <th>motor</th>
+        <th>veredito</th>
+        <th>preço</th>
+        <th>varredura de 500 páginas</th>
+        <th>o que acrescenta</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">DataForSEO On-Page API</td>
+        <td class="vd sim">a escolha óbvia</td>
         <td class="n">US$ 0,000125 / página<br>+JS: US$ 0,00125<br>+Lighthouse: US$ 0,00425<br>depósito mín. US$ 50</td>
         <td class="n"><strong>US$ 0,06</strong><br>US$ 0,63 com JS<br>US$ 2,13 com Lighthouse</td>
         <td>API pura, pré-paga, sem assento e sem assinatura: 100+ verificações técnicas, dados estruturados, links quebrados</td>
-        <td class="vd sim">a escolha óbvia</td>
       </tr>
       <tr>
         <td class="nome">Rastreador próprio<br><span class="rotulo">+ browser quente</span></td>
+        <td class="vd talvez">barato em infra, caro em tempo</td>
         <td class="n">US$ 0,12 / hora de browser</td>
         <td class="n">~US$ 0,08<br>+ engenharia</td>
         <td>controle total e nenhum fornecedor no caminho</td>
-        <td class="vd talvez">barato em infra, caro em tempo</td>
       </tr>
       <tr>
         <td class="nome">Unlighthouse</td>
+        <td class="vd talvez">ótimo até ~100 páginas</td>
         <td class="n">open source (MIT)</td>
         <td class="n">US$ 0 + o vosso compute</td>
         <td>Lighthouse em todas as páginas, com descoberta por sitemap e links, amostragem de rotas dinâmicas e painel próprio</td>
-        <td class="vd talvez">ótimo até ~100 páginas</td>
       </tr>
       <tr>
         <td class="nome">JetOctopus</td>
+        <td class="vd talvez">se subir para enterprise</td>
         <td class="n">a partir de US$ 237–383/mês<br>500 mil páginas + 2 mi de linhas de log</td>
         <td class="n">~US$ 0,0005 / página</td>
         <td>rastreio em escala + <strong>análise de log</strong> (o que o Googlebot realmente visitou)</td>
-        <td class="vd talvez">se subir para enterprise</td>
       </tr>
       <tr>
         <td class="nome">Ahrefs Site Audit</td>
+        <td class="vd talvez">verificar licença p/ revenda</td>
         <td class="n">dentro do plano<br>Lite US$ 129/mês = 100k créditos</td>
         <td class="n">incluído</td>
         <td>rastreio + o grafo de backlinks na mesma casa</td>
-        <td class="vd talvez">verificar licença p/ revenda</td>
       </tr>
       <tr>
         <td class="nome">Screaming Frog</td>
+        <td class="vd nao">ferramenta de desktop</td>
         <td class="n">US$ 279/ano por assento<br>(grátis até 500 URLs)</td>
         <td class="n">ilimitado no assento</td>
         <td>o padrão do mercado para auditoria manual; tem CLI e agendamento</td>
-        <td class="vd nao">ferramenta de desktop</td>
       </tr>
       <tr>
         <td class="nome">Sitebulb</td>
+        <td class="vd nao">sem API pública</td>
         <td class="n">desktop US$ 18–42/mês<br>Cloud US$ 125–495/mês</td>
         <td class="n">incluído no plano</td>
         <td>melhores explicações didáticas do mercado; Cloud roda sem máquina local</td>
-        <td class="vd nao">sem API pública</td>
       </tr>
       <tr>
         <td class="nome">Lumar (ex-DeepCrawl)</td>
+        <td class="vd nao">outra faixa de mercado</td>
         <td class="n">sob consulta · ~US$ 2.667/mês estimados</td>
         <td class="n">—</td>
         <td>rastreio de milhões de URLs, governança, integrações corporativas</td>
-        <td class="vd nao">outra faixa de mercado</td>
       </tr>
       <tr>
         <td class="nome">Botify</td>
+        <td class="vd nao">outra faixa de mercado</td>
         <td class="n">sob consulta · a partir de ~US$ 5.000/mês</td>
         <td class="n">—</td>
         <td>rastreio + logs + ativação, para e-commerce de grande porte</td>
-        <td class="vd nao">outra faixa de mercado</td>
       </tr>
     </tbody>
   </table></div>
@@ -418,37 +454,42 @@
   <h2>O cenário completo, a 1.000 auditorias por mês</h2>
 
   <div class="tabela-env"><table>
-    <thead><tr><th>combinação</th><th>custo mensal</th><th>por auditoria</th><th>o que o cliente ganha</th></tr></thead>
+    <thead><tr>
+        <th>combinação</th>
+        <th>o que o cliente ganha</th>
+        <th>custo mensal</th>
+        <th>por auditoria</th>
+      </tr></thead>
     <tbody>
       <tr>
         <td class="nome">hoje</td>
+        <td>a auditoria como ela é</td>
         <td class="n">~US$ 8 + Vercel</td>
         <td class="n">US$ 0,008</td>
-        <td>a auditoria como ela é</td>
       </tr>
       <tr>
         <td class="nome">camada grátis<br><span class="rotulo">PSI + CrUX + axe-core + APCA</span></td>
+        <td>performance com throttling e dado de campo real, acessibilidade citando critério WCAG. <strong>Sem custo adicional</strong></td>
         <td class="n">~US$ 8</td>
         <td class="n">US$ 0,008</td>
-        <td>performance com throttling e dado de campo real, acessibilidade citando critério WCAG. <strong>Sem custo adicional</strong></td>
       </tr>
       <tr>
         <td class="nome">+ browser quente<br><span class="rotulo">Browserbase</span></td>
+        <td>mesma auditoria, mais rápida e sem o teto de 2 GB — e provavelmente devolve parte disso em conta de Vercel</td>
         <td class="n">~US$ 28</td>
         <td class="n">US$ 0,028</td>
-        <td>mesma auditoria, mais rápida e sem o teto de 2 GB — e provavelmente devolve parte disso em conta de Vercel</td>
       </tr>
       <tr>
         <td class="nome">+ premium de performance<br><span class="rotulo">WebPageTest Pro</span></td>
+        <td>dispositivo e rede reais, filmstrip — evidência de nível agência</td>
         <td class="n">~US$ 47</td>
         <td class="n">US$ 0,047</td>
-        <td>dispositivo e rede reais, filmstrip — evidência de nível agência</td>
       </tr>
       <tr>
         <td class="nome">+ atenção visual<br><span class="rotulo">Attention Insight</span></td>
+        <td>o teste dos 5 segundos vira medição. <strong>Inviável no grátis, natural no pago</strong></td>
         <td class="n">~US$ 1.000</td>
         <td class="n">US$ 1,00</td>
-        <td>o teste dos 5 segundos vira medição. <strong>Inviável no grátis, natural no pago</strong></td>
       </tr>
     </tbody>
   </table></div>
