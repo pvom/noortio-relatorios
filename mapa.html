@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A arquitetura do Noortio em diagramas: o pipeline completo, a escada de modelos, o corte grátis/pago, a regra do diff, e onde cada um dos 12 defeitos mora.">
+<meta property="og:title" content="Mapa do Noortio">
+<meta property="og:description" content="A arquitetura do Noortio em diagramas, com os defeitos marcados no lugar onde moram.">
+<meta property="og:type" content="article">
+<title>Mapa do Noortio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --ground:#f6f5f1; --surface:#fffefb;
+    --ink:#17180f; --ink-2:#5c5955; --ink-3:#8a877f;
+    --rule:#dedbd2; --rule-forte:#c9c5b8;
+    --alto:#b8402f; --medio:#a2661a; --baixo:#7d6a2a; --frio:#3f4a52;
+    --link:#4a6300; --marca:#c5fd24;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:16.5px;line-height:1.62;letter-spacing:-.006em;
+  }
+  .env{max-width:60rem;margin:0 auto;padding:0 1.5rem 6rem}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  code{font-size:.9em;background:var(--surface);border:1px solid var(--rule);padding:.05em .3em;white-space:nowrap}
+  .rotulo{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--ink-2);text-transform:lowercase}
+
+  header{padding:5rem 0 2rem;display:flex;flex-direction:column;gap:1.3rem}
+  h1{font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.06;letter-spacing:-.028em;font-weight:600;margin:0;text-wrap:balance;max-width:16ch}
+  .lede{font-size:1.13rem;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  /* ── legenda de severidade ─────────────────────────── */
+  .legenda{
+    display:flex;flex-wrap:wrap;gap:.15rem 1.75rem;
+    border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);
+    padding:.9rem 0;margin-top:.5rem;
+  }
+  .legenda span{display:flex;align-items:center;gap:.5rem;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-2)}
+  .legenda i{width:3px;height:13px;border-radius:1px;display:block}
+
+  section{padding-top:3.5rem}
+  h2{font-size:1.4rem;font-weight:600;margin:0 0 .35rem;letter-spacing:-.02em;line-height:1.2;text-wrap:balance}
+  .resumo{color:var(--ink-2);margin:0 0 1.5rem;max-width:64ch}
+  p{max-width:66ch}
+
+  figure{margin:0 0 1.5rem}
+  .quadro{
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--rule-forte);
+    padding:1.5rem 0;overflow-x:auto;
+  }
+  .quadro svg{display:block;max-width:100%;height:auto}
+  .largo svg{min-width:56rem}
+  .medio svg{min-width:40rem}
+  figcaption{font-size:.92rem;color:var(--ink-2);margin-top:.85rem;max-width:66ch}
+  figcaption strong{color:var(--ink);font-weight:600}
+
+  .nota{background:var(--surface);border-left:2px solid var(--rule-forte);padding:.85rem 1rem;margin:1.25rem 0;max-width:68ch}
+  .nota.risco{border-left-color:var(--alto)}
+  .nota .rotulo{display:block;margin-bottom:.3rem}
+  .nota p{margin:0}
+
+  .fecho{margin-top:4.5rem;border-top:2px solid var(--ink);padding-top:2rem;display:flex;flex-direction:column;gap:1rem}
+  .fecho p{margin:0}
+  a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{background:var(--marca);color:var(--ink);text-decoration:none}
+  a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:2px}
+  .irmao{margin-top:2.5rem;padding:1.15rem 0;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);display:flex;flex-direction:column;gap:.45rem}
+  .irmao p{margin:0}
+  @media (max-width:640px){ body{font-size:16px} }
+</style>
+</head>
+<body>
+<div class="env">
+
+<header>
+  <span class="rotulo">noortio · arquitetura em diagramas · 26/08/2026</span>
+  <h1>Mapa do Noortio</h1>
+  <p class="lede">O sistema desenhado, e os doze defeitos marcados <strong>no lugar onde moram</strong> — não numa lista à parte. Cada figura mostra um mecanismo que a prosa levaria um parágrafo para montar na cabeça de quem lê.</p>
+  <div class="legenda">
+    <span><i style="background:var(--alto)"></i> defeito que custa dinheiro ou mente ao usuário</span>
+    <span><i style="background:var(--medio)"></i> defeito de integridade ou de mensagem</span>
+    <span><i style="background:var(--baixo)"></i> anotado, sem urgência</span>
+    <span><i style="background:var(--frio)"></i> já corrigido</span>
+  </div>
+</header>
+
+<!-- ════════════════ 1 · PIPELINE ════════════════ -->
+<section id="pipeline">
+  <h2>O pipeline completo</h2>
+  <p class="resumo">Uma auditoria atravessa seis estágios antes de existir, e só vira linha no banco se alguém reivindicar. A linha tracejada é a fronteira entre o que é efêmero e o que persiste.</p>
+
+  <figure>
+    <div class="quadro largo">
+      <svg viewBox="0 0 1120 340" role="img" aria-label="Pipeline do Noortio: portão de DNS, captura, medição, julgamento, reconciliação e lacre acontecem sem gravar nada; o relatório cifrado volta ao navegador e só é persistido no Postgres quando o usuário reivindica, o que depois habilita a reauditoria e o diff. Sete defeitos estão marcados nos estágios onde ocorrem.">
+        <defs>
+          <marker id="s1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <g font-size="10.5" fill="#8a877f">
+            <text x="30" y="58">~50 ms</text>
+            <text x="210" y="58">até 200 s · 2 GB</text>
+            <text x="390" y="58">dentro da página</text>
+            <text x="570" y="58">até 300 s · 1 GB</text>
+            <text x="750" y="58">sem modelo</text>
+            <text x="930" y="58">AES-256-GCM</text>
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="30" y="70" width="150" height="58"/><rect x="210" y="70" width="150" height="58"/>
+            <rect x="390" y="70" width="150" height="58"/><rect x="570" y="70" width="150" height="58"/>
+            <rect x="750" y="70" width="150" height="58"/><rect x="930" y="70" width="150" height="58"/>
+          </g>
+          <g font-size="12" font-weight="500">
+            <text x="42" y="94">portão de DNS</text><text x="222" y="94">captura</text>
+            <text x="402" y="94">medição</text><text x="582" y="94">julgamento</text>
+            <text x="762" y="94">reconciliação</text><text x="942" y="94">lacre</text>
+          </g>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="42" y="112">o domínio existe?</text><text x="222" y="112">Chromium · 2 vistas</text>
+            <text x="402" y="112">DOM + SEO técnico</text><text x="582" y="112">escada + piso</text>
+            <text x="762" y="112">tetos e carimbo</text><text x="942" y="112">relatório cifrado</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1" marker-end="url(#s1)">
+            <line x1="186" y1="99" x2="204" y2="99"/><line x1="366" y1="99" x2="384" y2="99"/>
+            <line x1="546" y1="99" x2="564" y2="99"/><line x1="726" y1="99" x2="744" y2="99"/>
+            <line x1="906" y1="99" x2="924" y2="99"/>
+          </g>
+          <g font-size="10">
+            <rect x="42" y="140" width="3" height="13" fill="#a2661a"/><text x="51" y="150" fill="#5c5955">07 guarda morta</text>
+            <rect x="222" y="140" width="3" height="13" fill="#b8402f"/><text x="231" y="150" fill="#5c5955">02 cota sem estorno</text>
+            <rect x="222" y="158" width="3" height="13" fill="#a2661a"/><text x="231" y="168" fill="#5c5955">08 frase descartada</text>
+            <rect x="582" y="140" width="3" height="13" fill="#a2661a"/><text x="591" y="150" fill="#5c5955">05 identidade refeita</text>
+            <rect x="762" y="140" width="3" height="13" fill="#b8402f"/><text x="771" y="150" fill="#5c5955">01 nota final sem oráculo</text>
+          </g>
+          <path d="M1080,99 H1100 V186 H60 V214" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#s1)"/>
+          <text x="1030" y="180" font-size="10.5" fill="#5c5955" text-anchor="end">o relatório volta ao navegador cifrado — nada foi gravado ainda</text>
+          <line x1="0" y1="204" x2="1120" y2="204" stroke="#c9c5b8" stroke-width="1" stroke-dasharray="2 4"/>
+          <text x="640" y="200" font-size="10" fill="#8a877f">↑ efêmero · ↓ só quando alguém reivindica</text>
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="30" y="222" width="150" height="46"/><rect x="290" y="222" width="180" height="46"/>
+            <rect x="580" y="222" width="180" height="46"/><rect x="870" y="222" width="210" height="46"/>
+          </g>
+          <g font-size="12" font-weight="500">
+            <text x="42" y="244">tela do relatório</text><text x="302" y="244">POST /api/runs</text>
+            <text x="592" y="244">Postgres + Blob</text><text x="882" y="244">2ª execução → diff</text>
+          </g>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="42" y="260">corte grátis/pago</text><text x="302" y="260">reivindicar a auditoria</text>
+            <text x="592" y="260">projects · pages · runs</text><text x="882" y="260">run_diffs → /comparar</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1" marker-end="url(#s1)">
+            <line x1="186" y1="245" x2="284" y2="245"/><line x1="476" y1="245" x2="574" y2="245"/>
+            <line x1="766" y1="245" x2="864" y2="245"/>
+          </g>
+          <g font-size="10">
+            <rect x="42" y="282" width="3" height="13" fill="#b8402f"/><text x="51" y="292" fill="#5c5955">03 movimentos vazam</text>
+            <rect x="42" y="300" width="3" height="13" fill="#b8402f"/><text x="51" y="310" fill="#5c5955">04 contagem menor</text>
+            <rect x="42" y="318" width="3" height="13" fill="#a2661a"/><text x="51" y="328" fill="#5c5955">06 tradução 400</text>
+            <rect x="302" y="282" width="3" height="13" fill="#7d6a2a"/><text x="311" y="292" fill="#5c5955">11 GET devolve 405</text>
+            <rect x="882" y="282" width="3" height="13" fill="#7d6a2a"/><text x="891" y="292" fill="#5c5955">10 i18n cega</text>
+            <rect x="882" y="300" width="3" height="13" fill="#3f4a52"/><text x="891" y="310" fill="#5c5955">12 fixture (corrigido)</text>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>O que a figura mostra:</strong> os quatro defeitos de gravidade alta se concentram em dois pontos — a fronteira do dinheiro (cota, na entrada) e a fronteira da entrega (o corte grátis/pago, na saída). O miolo caro do sistema — captura e medição — não tem nenhum. Foi a parte mais testada e é a mais sólida.</figcaption>
+  </figure>
+</section>
+
+<!-- ════════════════ 2 · ESCADA ════════════════ -->
+<section id="escada">
+  <h2>Por que começar pelo modelo grátis é seguro</h2>
+  <p class="resumo">A escada vai do mais barato ao mais capaz — que é também do pior ao melhor julgamento. Isso só não é irresponsável por causa do laço abaixo.</p>
+
+  <figure>
+    <div class="quadro medio">
+      <svg viewBox="0 0 900 330" role="img" aria-label="A escada de modelos: cada resposta passa por um piso de qualidade; reprovada, volta ao mesmo modelo com os motivos da reprovação; reprovada duas vezes, a escada sobe para o modelo seguinte, mais caro. Só uma resposta aprovada segue para a reconciliação.">
+        <defs>
+          <marker id="s2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+          <marker id="s2r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#a2661a"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <text x="46" y="42" font-size="10.5" fill="#5c5955">reprovou 2× → sobe um degrau, mais caro</text>
+          <line x1="28" y1="216" x2="28" y2="70" stroke="currentColor" stroke-width="1" marker-end="url(#s2)"/>
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="44" y="58" width="150" height="44"/>
+            <rect x="44" y="130" width="150" height="44"/>
+            <rect x="44" y="202" width="150" height="44"/>
+          </g>
+          <g font-size="12" font-weight="500">
+            <text x="56" y="80">bom</text><text x="56" y="152">barato</text><text x="56" y="224">grátis</text>
+          </g>
+          <g font-size="10" fill="#8a877f">
+            <text x="56" y="94">degrau 3 · custa</text><text x="56" y="166">degrau 2</text><text x="56" y="238">degrau 1</text>
+          </g>
+          <line x1="200" y1="224" x2="330" y2="204" stroke="currentColor" stroke-width="1" marker-end="url(#s2)"/>
+          <rect x="336" y="160" width="180" height="104" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="348" y="186" font-size="12" font-weight="500">piso de qualidade</text>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="348" y="206">9 eixos · 4–6 achados</text>
+            <text x="348" y="224">metade cita fato medido</text>
+            <text x="348" y="242">prescrição não-genérica</text>
+          </g>
+          <line x1="522" y1="212" x2="640" y2="212" stroke="currentColor" stroke-width="1" marker-end="url(#s2)"/>
+          <text x="540" y="204" font-size="10.5" fill="#5c5955">aprovou</text>
+          <rect x="646" y="160" width="214" height="104" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="658" y="186" font-size="12" font-weight="500">reconciliação</text>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="658" y="206">tetos, carimbo, veto</text>
+            <text x="658" y="224">o modelo não opina aqui</text>
+          </g>
+          <text x="646" y="292" font-size="10" fill="#8a877f">rótulo público: "motor noortio v1"</text>
+          <path d="M426,264 V298 H118 V250" fill="none" stroke="#a2661a" stroke-width="1.5" marker-end="url(#s2r)"/>
+          <text x="140" y="292" font-size="10.5" fill="#a2661a">reprovou → 2ª passada com os motivos</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>A peça que torna a economia possível:</strong> sem o piso, "comece pelo mais barato" significaria "entregue o pior, calado" — um modelo fraco devolve JSON perfeitamente válido com julgamento vazio, e isso passa em qualquer validação de schema. A segunda passada é dirigida: o modelo recebe a lista do que faltou, não um "tente de novo".</figcaption>
+  </figure>
+</section>
+
+<!-- ════════════════ 3 · PAYWALL ════════════════ -->
+<section id="corte">
+  <h2>O corte grátis/pago, e por onde ele vaza</h2>
+  <p class="resumo">A regra do produto: o grátis <em>nomeia</em> o defeito, o pago entrega a <em>cura</em>. A função que faz o corte enumera o que apagar — então campo novo nasce liberado.</p>
+
+  <figure>
+    <div class="quadro medio">
+      <svg viewBox="0 0 900 400" role="img" aria-label="O corte grátis pago: redact apaga prescrição, antes e depois, verificação, risco, copy, sistema e não-mexer; deixa passar título, severidade, evidência medida e localização. Três campos atravessam a linha do paywall sem serem apagados: movimentos, veredito da varredura de títulos e fora de escopo.">
+        <defs>
+          <marker id="s3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+          <marker id="s3v" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#b8402f"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <!-- origem -->
+          <rect x="30" y="44" width="170" height="300" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="42" y="68" font-size="12" font-weight="500">Report completo</text>
+          <text x="42" y="84" font-size="10.5" fill="#8a877f">dentro do lacre</text>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="42" y="112">título · severidade</text>
+            <text x="42" y="130">evidência · local</text>
+            <text x="42" y="152">prescrição</text>
+            <text x="42" y="170">antes · depois</text>
+            <text x="42" y="188">verificação · risco</text>
+            <text x="42" y="206">copy · sistema</text>
+            <text x="42" y="224">doNotChange</text>
+            <text x="42" y="252">moves</text>
+            <text x="42" y="270">headlineScan.verdict</text>
+            <text x="42" y="288">outOfScope</text>
+          </g>
+
+          <!-- redact -->
+          <rect x="330" y="120" width="150" height="110" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="342" y="146" font-size="12" font-weight="500">redact()</text>
+          <text x="342" y="164" font-size="10.5" fill="#5c5955">apaga 7 campos</text>
+          <text x="342" y="182" font-size="10.5" fill="#5c5955">corta a 2 achados</text>
+          <text x="342" y="204" font-size="10.5" fill="#b8402f">lista o que APAGAR,</text>
+          <text x="342" y="220" font-size="10.5" fill="#b8402f">não o que mostrar</text>
+
+          <!-- linha do paywall -->
+          <line x1="560" y1="30" x2="560" y2="370" stroke="#c9c5b8" stroke-width="1" stroke-dasharray="2 4"/>
+          <text x="568" y="42" font-size="10" fill="#8a877f">linha do paywall</text>
+
+          <!-- destino grátis -->
+          <rect x="640" y="90" width="200" height="86" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="652" y="114" font-size="12" font-weight="500">o que o grátis vê</text>
+          <text x="652" y="132" font-size="10.5" fill="#5c5955">2 achados nomeados</text>
+          <text x="652" y="150" font-size="10.5" fill="#5c5955">com evidência medida</text>
+          <text x="652" y="166" font-size="10.5" fill="#8a877f">"o problema existe"</text>
+
+          <!-- destino vazado -->
+          <rect x="640" y="240" width="200" height="104" fill="none" stroke="#b8402f" stroke-width="1.5"/>
+          <text x="652" y="264" font-size="12" font-weight="500" fill="#b8402f">o que vaza junto</text>
+          <text x="652" y="282" font-size="10.5" fill="#5c5955">moves — a cura em lista</text>
+          <text x="652" y="300" font-size="10.5" fill="#5c5955">headlineScan.verdict</text>
+          <text x="652" y="318" font-size="10.5" fill="#5c5955">outOfScope</text>
+          <text x="652" y="336" font-size="10" fill="#b8402f">nunca passaram por redact()</text>
+
+          <!-- fluxos -->
+          <line x1="206" y1="130" x2="324" y2="160" stroke="currentColor" stroke-width="1" marker-end="url(#s3)"/>
+          <line x1="486" y1="150" x2="634" y2="132" stroke="currentColor" stroke-width="1" marker-end="url(#s3)"/>
+          <path d="M206,262 C 380,262 420,290 634,290" fill="none" stroke="#b8402f" stroke-width="1.5" marker-end="url(#s3v)"/>
+          <text x="300" y="274" font-size="10.5" fill="#b8402f">desviam de redact()</text>
+
+          <!-- contagem -->
+          <text x="440" y="378" font-size="10.5" fill="#b8402f">e a tela anuncia "2 defeitos" — conta a lista já cortada</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>Dois defeitos numa figura só.</strong> A seta de baixo é o nº 03: três campos atravessam a linha sem passar pela função que faz o corte, e um deles é a prescrição em forma de lista. A linha final é o nº 04: a tela conta os achados que sobraram, não os que existiam. Inverter <code>redact()</code> para lista de permissão fecha a classe inteira — campo novo passaria a nascer retido.</figcaption>
+  </figure>
+</section>
+
+<!-- ════════════════ 4 · DIFF ════════════════ -->
+<section id="diff">
+  <h2>A regra que sustenta a promessa de retenção</h2>
+  <p class="resumo">"Prove que consertou" só vale se o produto se recusar a dizer <em>resolvido</em> quando não sabe. Este é o desenho da recusa.</p>
+
+  <figure>
+    <div class="quadro medio">
+      <svg viewBox="0 0 900 300" role="img" aria-label="Comparação entre duas execuções: um achado presente na primeira e ausente na segunda tem três desfechos possíveis. Se um número medido cruzou o alvo, é resolvido por medição. Se o texto literal desapareceu, é resolvido por texto. Se apenas sumiu da lista do modelo, é não verificável. E se o texto continua na página, persiste, mesmo que o modelo não o repita.">
+        <defs>
+          <marker id="s4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <!-- entrada -->
+          <rect x="30" y="112" width="190" height="76" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="42" y="136" font-size="12" font-weight="500">achado na 1ª execução</text>
+          <text x="42" y="156" font-size="10.5" fill="#5c5955">ausente na 2ª</text>
+          <text x="42" y="176" font-size="10.5" fill="#8a877f">o modelo não repetiu</text>
+
+          <!-- perguntas -->
+          <line x1="226" y1="150" x2="286" y2="150" stroke="currentColor" stroke-width="1" marker-end="url(#s4)"/>
+          <rect x="290" y="112" width="180" height="76" fill="none" stroke="currentColor" stroke-width="1"/>
+          <text x="302" y="140" font-size="12" font-weight="500">existe prova</text>
+          <text x="302" y="158" font-size="12" font-weight="500">POSITIVA?</text>
+          <text x="302" y="178" font-size="10.5" fill="#8a877f">medição ou texto literal</text>
+
+          <!-- desfechos -->
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="580" y="30" width="290" height="46"/>
+            <rect x="580" y="96" width="290" height="46"/>
+            <rect x="580" y="162" width="290" height="46"/>
+            <rect x="580" y="228" width="290" height="46"/>
+          </g>
+          <g font-size="11.5" font-weight="500">
+            <text x="592" y="50">resolvido — por MEDIÇÃO</text>
+            <text x="592" y="116">resolvido — por TEXTO</text>
+            <text x="592" y="182">não verificável</text>
+            <text x="592" y="248">persiste (veto)</text>
+          </g>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="592" y="66">o número cruzou o alvo</text>
+            <text x="592" y="132">a frase apontada sumiu da página</text>
+            <text x="592" y="198">só sumiu da lista — não prova nada</text>
+            <text x="592" y="264">a frase continua lá — o modelo não decide</text>
+          </g>
+
+          <g stroke="currentColor" stroke-width="1" marker-end="url(#s4)" fill="none">
+            <path d="M476,140 C 520,140 530,53 574,53"/>
+            <path d="M476,146 C 520,146 530,119 574,119"/>
+            <path d="M476,158 C 520,158 530,185 574,185"/>
+            <path d="M476,164 C 520,164 530,251 574,251"/>
+          </g>
+          <text x="492" y="104" font-size="10.5" fill="#5c5955">sim</text>
+          <text x="492" y="212" font-size="10.5" fill="#5c5955">não</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>Por que isso é arquitetura e não detalhe:</strong> o julgamento é não-determinístico — a mesma página auditada duas vezes produz listas diferentes, e existe um script no repo (<code>scripts/variance.ts</code>) só para medir esse ruído. Se ausência valesse como prova, o produto diria "resolvido" para quem não mexeu em nada. Uma única vez que isso acontecesse com um cliente atento derrubaria a credibilidade do relatório inteiro.</figcaption>
+  </figure>
+</section>
+
+<!-- ════════════════ 5 · O PADRÃO ════════════════ -->
+<section id="padrao">
+  <h2>Os doze defeitos são três instâncias de um padrão</h2>
+  <p class="resumo">Onde o sistema instalou um conferente, ele é rigoroso. Onde não instalou, ele confia em si mesmo — e é exatamente ali que a suíte encontrou os defeitos graves.</p>
+
+  <figure>
+    <div class="quadro medio">
+      <svg viewBox="0 0 900 380" role="img" aria-label="Comparação entre três lugares onde existe um conferente e três onde não existe. Com conferente: o piso de qualidade sobre a saída do modelo, os tetos de reconciliação sobre o placar, e o veto do diff sobre achados ausentes. Sem conferente: a nota final contra a média dos eixos, a redação enumerando o que esconder, e a cota debitada sem estorno.">
+        <defs>
+          <marker id="s5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+          <marker id="s5x" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#b8402f"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <text x="30" y="34" font-size="11" letter-spacing="1.4" fill="#5c5955">TEM CONFERENTE</text>
+          <text x="480" y="34" font-size="11" letter-spacing="1.4" fill="#b8402f">NÃO TEM</text>
+          <line x1="450" y1="18" x2="450" y2="360" stroke="#c9c5b8" stroke-width="1" stroke-dasharray="2 4"/>
+
+          <!-- esquerda -->
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="30" y="52" width="180" height="58"/>
+            <rect x="30" y="152" width="180" height="58"/>
+            <rect x="30" y="252" width="180" height="58"/>
+            <rect x="250" y="52" width="150" height="58"/>
+            <rect x="250" y="152" width="150" height="58"/>
+            <rect x="250" y="252" width="150" height="58"/>
+          </g>
+          <g font-size="11" fill="#5c5955">
+            <text x="42" y="76">saída do modelo</text>
+            <text x="42" y="94">JSON válido, vazio</text>
+            <text x="42" y="176">placar × achados</text>
+            <text x="42" y="194">P0 e nota 7 juntos</text>
+            <text x="42" y="276">achado que sumiu</text>
+            <text x="42" y="294">ausência é prova?</text>
+          </g>
+          <g font-size="11.5" font-weight="500">
+            <text x="262" y="78">piso de qualidade</text>
+            <text x="262" y="178">tetos e veto</text>
+            <text x="262" y="278">prova positiva</text>
+          </g>
+          <g font-size="10" fill="#8a877f">
+            <text x="262" y="96">lib/quality.ts</text>
+            <text x="262" y="196">lib/rigor.ts</text>
+            <text x="262" y="296">lib/diff-findings.ts</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1" marker-end="url(#s5)">
+            <line x1="216" y1="81" x2="244" y2="81"/>
+            <line x1="216" y1="181" x2="244" y2="181"/>
+            <line x1="216" y1="281" x2="244" y2="281"/>
+          </g>
+
+          <!-- direita -->
+          <g fill="none" stroke="#b8402f" stroke-width="1">
+            <rect x="480" y="52" width="180" height="58"/>
+            <rect x="480" y="152" width="180" height="58"/>
+            <rect x="480" y="252" width="180" height="58"/>
+          </g>
+          <g font-size="11" fill="#5c5955">
+            <text x="492" y="76">nota final</text>
+            <text x="492" y="94">× média dos 9 eixos</text>
+            <text x="492" y="176">redação do relatório</text>
+            <text x="492" y="194">lista o que APAGAR</text>
+            <text x="492" y="276">cota debitada</text>
+            <text x="492" y="294">captura falhou</text>
+          </g>
+          <g stroke="#b8402f" stroke-width="1.5" marker-end="url(#s5x)">
+            <line x1="666" y1="81" x2="700" y2="81"/>
+            <line x1="666" y1="181" x2="700" y2="181"/>
+            <line x1="666" y1="281" x2="700" y2="281"/>
+          </g>
+          <g font-size="11.5" font-weight="500" fill="#b8402f">
+            <text x="708" y="78">ninguém confere</text>
+            <text x="708" y="178">campo novo vaza</text>
+            <text x="708" y="278">ninguém estorna</text>
+          </g>
+          <g font-size="10" fill="#8a877f">
+            <text x="708" y="96">defeito 01</text>
+            <text x="708" y="196">defeito 03 · 04</text>
+            <text x="708" y="296">defeito 02</text>
+          </g>
+
+          <text x="30" y="352" font-size="10.5" fill="#5c5955">a estrutura para instalar os três conferentes já existe — é a mesma dos de cima</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>A leitura que fecha a auditoria:</strong> isto não é um sistema descuidado com doze problemas soltos. É um sistema rigoroso com três buracos do mesmo formato. Por isso as correções são pequenas: cada uma é instalar, num lugar novo, um mecanismo que o repositório já sabe construir e já usa em outros três.</figcaption>
+  </figure>
+
+  <div class="nota risco"><span class="rotulo">o de maior retorno imediato</span>
+  <p>O defeito 04 — a contagem — é uma soma de dois números que já estão na tela, e acontece na superfície cujo único trabalho é convencer alguém a pagar. É a menor correção da lista com o maior efeito direto em conversão.</p></div>
+</section>
+
+<!-- ════════════════ 6 · TOPOLOGIA ════════════════ -->
+<section id="topologia">
+  <h2>Onde tudo isso roda — e por onde entra código teu</h2>
+  <p class="resumo">Cinco serviços externos, dois deles caros por chamada. A linha tracejada é a única costura limpa do sistema.</p>
+
+  <figure>
+    <div class="quadro largo">
+      <svg viewBox="0 0 1120 340" role="img" aria-label="Topologia: o app Next na Vercel fala com Clerk para identidade, Neon para dados, Upstash para cota, Blob para fotos, OpenRouter para julgamento e Firecrawl como plano B da captura. O endereço do OpenRouter está fixo no código; transformá-lo em variável de ambiente é a costura por onde um serviço próprio poderia entrar sem tocar em rota, auth ou banco.">
+        <defs>
+          <marker id="s6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="currentColor"/>
+          </marker>
+          <marker id="s6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,1 L9,5 L0,9 z" fill="#4a6300"/>
+          </marker>
+        </defs>
+        <g font-family="IBM Plex Mono, monospace" fill="currentColor">
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="30" y="40" width="250" height="52"/><rect x="30" y="110" width="250" height="52"/>
+            <rect x="30" y="180" width="250" height="52"/><rect x="30" y="250" width="250" height="52"/>
+          </g>
+          <g font-size="11.5" font-weight="500">
+            <text x="42" y="64">Clerk</text><text x="42" y="134">Neon Postgres</text>
+            <text x="42" y="204">Upstash KV</text><text x="42" y="274">Vercel Blob</text>
+          </g>
+          <g font-size="10" fill="#8a877f">
+            <text x="42" y="82">identidade · 8 telas + middleware</text>
+            <text x="42" y="152">8 tabelas · schema em TypeScript</text>
+            <text x="42" y="222">cota anônima · falha aberto</text>
+            <text x="42" y="292">as 3 fotos por run</text>
+          </g>
+          <g stroke="currentColor" stroke-width="1" marker-end="url(#s6)">
+            <line x1="286" y1="66" x2="414" y2="140"/><line x1="286" y1="136" x2="414" y2="165"/>
+            <line x1="286" y1="206" x2="414" y2="190"/><line x1="286" y1="276" x2="414" y2="215"/>
+          </g>
+          <rect x="420" y="110" width="260" height="130" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <text x="432" y="138" font-size="13" font-weight="500">Next 15 na Vercel</text>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="432" y="160">20 rotas · 1.635 linhas</text>
+            <text x="432" y="178">9 páginas leem o banco</text>
+            <text x="432" y="196">direto, sem passar por rota</text>
+          </g>
+          <text x="432" y="222" font-size="10" fill="#8a877f">lib/ — 15.585 linhas: o produto</text>
+          <g fill="none" stroke="currentColor" stroke-width="1">
+            <rect x="800" y="60" width="290" height="52"/><rect x="800" y="250" width="290" height="52"/>
+          </g>
+          <text x="812" y="84" font-size="11.5" font-weight="500">OpenRouter</text>
+          <text x="812" y="102" font-size="10" fill="#8a877f">escada de modelos · custa por auditoria</text>
+          <text x="812" y="274" font-size="11.5" font-weight="500">Firecrawl</text>
+          <text x="812" y="292" font-size="10" fill="#8a877f">plano B · só se o navegador foi barrado</text>
+          <line x1="686" y1="150" x2="794" y2="90" stroke="currentColor" stroke-width="1" marker-end="url(#s6)"/>
+          <line x1="686" y1="212" x2="794" y2="266" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#s6)"/>
+          <rect x="800" y="150" width="290" height="62" fill="none" stroke="#4a6300" stroke-width="1.5" stroke-dasharray="5 3"/>
+          <text x="812" y="176" font-size="11.5" font-weight="500" fill="#4a6300">serviço próprio</text>
+          <text x="812" y="196" font-size="10" fill="#5c5955">FastAPI, agentes, evals…</text>
+          <path d="M686,190 H794" fill="none" stroke="#4a6300" stroke-width="1.5" marker-end="url(#s6a)"/>
+          <text x="690" y="180" font-size="9" fill="#4a6300">OPENROUTER_BASE_URL</text>
+          <g font-size="10.5" fill="#5c5955">
+            <text x="420" y="272">as 6 telas públicas e as 9 logadas são server components</text>
+            <text x="420" y="290">/api/capture 2 GB · 200 s · /api/judge 1 GB · 300 s</text>
+          </g>
+          <text x="420" y="312" font-size="10" fill="#8a877f">erro vai como EVENTO no stream, nunca como 4xx</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption><strong>A resposta desenhada para a pergunta do FastAPI:</strong> o julgamento é a única peça com fronteira limpa — entra <code>Capture</code>, sai <code>Report</code>. Trocar o endereço fixo por uma variável de ambiente é uma linha, e abre a caixa verde sem tocar em rota, auth ou banco. Já o Clerk atravessa oito telas e o schema do banco é lido direto por nove páginas: essas duas não têm costura, e é por isso que "substituir todas as rotas" custa muito mais do que parece.</figcaption>
+  </figure>
+</section>
+
+<div class="fecho">
+  <span class="rotulo">como ler este mapa</span>
+  <p>As figuras 1 e 6 são o sistema. As 2, 3 e 4 são os três mecanismos que definem o produto: por que dá para começar no modelo grátis, o que separa grátis de pago, e por que o diff prefere dizer "não sei". A figura 5 é o veredito da auditoria — e é a única que eu não teria conseguido desenhar antes de escrever os testes.</p>
+</div>
+
+<div class="irmao">
+  <span class="rotulo">as outras três páginas</span>
+  <p><a href="arquitetura.html">Arquitetura em texto</a> — as mesmas onze peças, ponto a ponto, com o raciocínio de cada decisão.</p>
+  <p><a href="tecnico.html">Relatório técnico</a> — os 12 defeitos com evidência medida, arquivo:linha e correção proposta.</p>
+  <p><a href="index.html">Relatório em linguagem simples</a> — os mesmos defeitos, sem termos técnicos.</p>
+</div>
+
+</div>
+</body>
+</html>
