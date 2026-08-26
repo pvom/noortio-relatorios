@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Os 12 defeitos do Noortio com evidência medida, arquivo:linha e correção proposta.">
+<meta property="og:title" content="Defeitos do Noortio, com evidência">
+<meta property="og:description" content="Os 12 defeitos do Noortio com evidência medida, arquivo:linha e correção proposta.">
+<meta property="og:type" content="article">
+<title>Defeitos do Noortio, com evidência</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Reset mínimo — fora do artefato não há o wrapper que fazia isto. */
+  *,*::before,*::after{box-sizing:border-box}
+  img,svg{max-width:100%;height:auto}
+  :root{
+    --ground:#f6f5f1;
+    --surface:#fffefb;
+    --ink:#17180f;
+    --ink-2:#5c5955;
+    --ink-3:#8a877f;
+    --rule:#dedbd2;
+    --rule-forte:#c9c5b8;
+    --alto:#b8402f;
+    --medio:#a2661a;
+    --baixo:#7d6a2a;
+    --resolvido:#3f4a52;
+    --link:#4a6300;
+    --marca:#c5fd24;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:16.5px;line-height:1.62;letter-spacing:-.006em;
+  }
+  .env{max-width:58rem;margin:0 auto;padding:0 1.5rem 6rem}
+  .mono,code,pre{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  .rotulo{
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    letter-spacing:.14em;color:var(--ink-2);text-transform:lowercase;
+  }
+
+  header{padding:5rem 0 2.5rem;display:flex;flex-direction:column;gap:1.4rem}
+  h1{
+    font-size:clamp(2rem,4.6vw,3.1rem);line-height:1.06;
+    letter-spacing:-.028em;font-weight:600;margin:0;
+    text-wrap:balance;max-width:22ch;
+  }
+  .lede{font-size:1.13rem;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  .placar{
+    display:flex;flex-wrap:wrap;
+    border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);
+    margin-top:.5rem;
+  }
+  .placar div{flex:1 1 7rem;padding:1.05rem 1rem 1.05rem 0;display:flex;flex-direction:column;gap:.25rem}
+  .placar b{
+    font-family:"IBM Plex Mono",monospace;font-size:1.6rem;font-weight:500;
+    letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1;
+  }
+
+  section{padding-top:3.25rem}
+  h2{font-size:1rem;font-weight:600;margin:0 0 .35rem;letter-spacing:-.01em}
+  .intro-secao{color:var(--ink-2);max-width:64ch;margin:0 0 2rem}
+
+  .item{
+    border-top:1px solid var(--rule);padding:1.9rem 0 .6rem;
+    display:grid;grid-template-columns:2.5rem 1fr;gap:0 1rem;
+  }
+  .item:first-of-type{border-top:1px solid var(--rule-forte)}
+  .marcador{padding-top:.5rem}
+  .barra{width:3px;height:14px;border-radius:1px;display:block;background:var(--baixo)}
+  .g-alto .barra{background:var(--alto)}
+  .g-medio .barra{background:var(--medio)}
+  .g-resolvido .barra{background:var(--resolvido)}
+  .num{display:block;margin-top:.5rem;font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+  .item h3{margin:0 0 .2rem;font-size:1.22rem;line-height:1.28;letter-spacing:-.016em;font-weight:600;text-wrap:balance}
+  .meta{display:flex;flex-wrap:wrap;gap:.15rem 1.25rem;margin-bottom:1.1rem}
+  .g-alto .sev{color:var(--alto)}
+  .g-medio .sev{color:var(--medio)}
+  .g-baixo .sev{color:var(--baixo)}
+  .g-resolvido .sev{color:var(--resolvido)}
+
+  dl{margin:0;display:flex;flex-direction:column;gap:.85rem}
+  dt{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-2);margin-bottom:.15rem}
+  dd{margin:0;max-width:66ch}
+  .solucao{background:var(--surface);border-left:2px solid var(--rule-forte);padding:.8rem 1rem;max-width:68ch}
+
+  pre{
+    margin:.5rem 0 0;padding:.75rem .9rem;background:var(--surface);
+    border:1px solid var(--rule);font-size:.83rem;line-height:1.55;
+    overflow-x:auto;white-space:pre;color:var(--ink);
+  }
+  code{font-size:.9em;background:var(--surface);border:1px solid var(--rule);padding:.05em .3em;white-space:nowrap}
+  pre code{background:none;border:0;padding:0;white-space:pre}
+  .ref{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--ink-2)}
+
+  table{border-collapse:collapse;width:100%;font-size:.92rem}
+  .tabela-env{overflow-x:auto;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte)}
+  th,td{text-align:left;padding:.6rem 1rem .6rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  th{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;color:var(--ink-2);font-weight:400;text-transform:lowercase}
+  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+  .fecho{margin-top:4rem;border-top:2px solid var(--ink);padding-top:2rem;display:flex;flex-direction:column;gap:1rem}
+  .fecho p{margin:0;max-width:64ch}
+  a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{background:var(--marca);color:var(--ink);text-decoration:none}
+  a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:2px}
+  .irmao{margin-top:2.5rem;padding:1.15rem 0;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);display:flex;flex-direction:column;gap:.3rem}
+  @media (max-width:640px){
+    body{font-size:16px}
+    .item{grid-template-columns:1.5rem 1fr}
+  }
+</style>
+
+<div class="env">
+
+<header>
+  <span class="rotulo">noortio · suíte e2e · branch testes-e2e · 26/08/2026</span>
+  <h1>Defeitos do Noortio, com evidência</h1>
+  <p class="lede">Doze defeitos encontrados por execução, não por leitura. Cada um traz o valor medido, o arquivo e a linha, e a correção proposta. A suíte roda em <strong>1min 54s</strong> por <strong>custo zero</strong>: nenhuma chamada ao OpenRouter, nenhuma escrita no Blob, nenhuma linha gravada em <code>runs</code>.</p>
+
+  <div class="placar">
+    <div><span class="rotulo">passed</span><b>78</b></div>
+    <div><span class="rotulo">failed</span><b>0</b></div>
+    <div><span class="rotulo">skipped</span><b>5</b></div>
+    <div><span class="rotulo">specs</span><b>15</b></div>
+    <div><span class="rotulo">defeitos</span><b>12</b></div>
+  </div>
+</header>
+
+<section>
+  <h2>P0 — dinheiro, receita e veracidade do veredito</h2>
+  <p class="intro-secao">Quatro defeitos que afetam o que o produto cobra, o que entrega de graça e o que afirma ao usuário. Todos com correção pequena.</p>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">01</span></div>
+    <div>
+      <h3><code>finalScore</code> é o único campo do Report sem oráculo</h3>
+      <div class="meta"><span class="rotulo sev">p0</span><span class="ref">lib/rigor.ts:141 · lib/quality.ts:88-172 · lib/judge.ts:160-164</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>O schema descreve <code>finalScore</code> como "média ponderada" dos nove eixos. Nada no app confronta o número com a média — nem o piso de qualidade, nem a reconciliação, nem o judge.</dd>
+        <dt>causa</dt>
+        <dd><code>assessQuality</code> valida os eixos um a um (contagem, faixa, nomes) e nunca os agrega. <code>reconcileScores</code> trata <code>report.finalScore</code> como autoritativo — <code>let finalScore = report.finalScore</code> — e só o toca para descontar a contribuição de um eixo que ele próprio capou.</dd>
+        <dt>impacto</dt>
+        <dd>Medido pelo oráculo <code>oraculoPlacarVersusMedia</code>:
+<pre><code>campo     finalScore
+esperado  [2.72, 5.72]  (média dos 9 eixos = 4.22)
+obtido    9</code></pre>
+        O fixture <code>score-inconsistent.json</code> passa em <code>assessQuality</code> com <code>ok: true, failures: []</code> e sai de <code>reconcileScores</code> com <code>adjustments: []</code> e o 9 intacto. Esse valor segue para <code>runs.finalScore</code>, para o ranking, para a barra do relatório e para <code>scoreBefore/scoreAfter</code> do diff (<span class="ref">lib/diff.ts:143-149</span>).</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Acrescentar a checagem em <code>assessQuality</code>: recalcular a média dos nove eixos e reprovar quando <code>|finalScore − média|</code> passar da tolerância, aplicando antes os dois tetos documentados (Conversão em <span class="ref">lib/rigor.ts:112</span> e o veto de Clareza em <span class="ref">lib/judge.ts:705</span>). Reprovar aqui já aciona a passada de correção dirigida que o judge tem — o mecanismo existe, falta o critério. O oráculo pronto está em <code>tests/helpers/invariants.ts</code>.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">02</span></div>
+    <div>
+      <h3>A cota anônima é debitada antes da captura e nunca estornada</h3>
+      <div class="meta"><span class="rotulo sev">p0</span><span class="ref">app/api/capture/route.ts:136 · :181 · :201-216 · app/auditor.tsx:997</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>spendAnonAudit(req)</code> roda antes de <code>capture(url)</code>. Quando a captura falha, o <code>catch</code> emite o erro e não devolve o crédito — não há caminho de estorno em <code>lib/limits.ts:68-98</code> nem em nenhum outro ponto do repositório. Enquanto isso a tela de falha exibe <code>t("audit.creditSaved")</code>: "crédito não consumido".</dd>
+        <dt>causa</dt>
+        <dd>A ordem é deliberada (evita que uma auditoria custe duas cotas), mas foi desenhada sem o caminho de erro. A janela deslizante do Upstash não tem operação inversa implementada.</dd>
+        <dt>impacto</dt>
+        <dd>Medido com IP sintético de 1 crédito:
+<pre><code>1) POST /api/capture → __blocked
+   {"type":"error","code":"CAPTURE_BLOCKED","kind":"blocked"}
+   nenhum evento `captured` — nada entregue
+
+2) POST /api/capture (mesmo IP, página válida)
+   {"type":"error","kind":"anon-limit"}</code></pre>
+        Agrava: o botão "tentar de novo" (<span class="ref">app/auditor.tsx:985</span>) refaz <code>/api/capture</code> e queima outra cota.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Estornar no <code>catch</code> para os <code>kind</code> que não consumiram recurso caro (<code>invalid-url</code>, <code>unreachable</code>, <code>blocked</code>), ou trocar <code>audit.creditSaved</code> pela verdade. A primeira exige uma operação de decremento na janela do Upstash; a segunda é uma chave de tradução. Decisão de produto, não técnica.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">03</span></div>
+    <div>
+      <h3><code>report.moves</code> não passa por <code>redact()</code> e é renderizado antes do paywall</h3>
+      <div class="meta"><span class="rotulo sev">p0</span><span class="ref">lib/store.ts:22-40 · app/report-view.tsx:2662-2670 · :2693</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>redact()</code> zera <code>prescription</code>, <code>before</code>, <code>after</code>, <code>verification</code>, <code>risk</code>, <code>copyPrescription</code>, <code>systemPrescription</code> e <code>doNotChange</code> — e não toca em <code>moves</code>. O render lista <code>report.moves</code> sob "o que fazer esta semana", acima do portão <code>{!unlocked &amp;&amp; …}</code>.</dd>
+        <dt>causa</dt>
+        <dd>O docstring de <span class="ref">lib/store.ts:4-9</span> declara que a cura fica retida; a implementação enumerou campos em vez de partir de uma lista de permissão. Um campo novo entra liberado por omissão — foi o que aconteceu com <code>moves</code>, e vale também para <code>headlineScan.verdict</code> e <code>outOfScope</code>.</dd>
+        <dt>impacto</dt>
+        <dd>Medido no DOM travado: 5 de 5 movimentos visíveis, entre eles <em>"Troque o H1 por uma frase que nomeie o usuário e o resultado"</em> e <em>"Corte o LCP de 4,4 s para abaixo de 2,5 s"</em>. É a prescrição em forma de lista, entregue antes do pagamento.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Incluir <code>moves</code> na redação (vazio, ou truncado a um item como isca), e inverter a função para lista de permissão, de modo que campo novo nasça retido. Se a exposição for intencional, corrigir o docstring — hoje código e comentário se contradizem.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">04</span></div>
+    <div>
+      <h3><code>report.defectsBlocking</code> conta o relatório já redigido</h3>
+      <div class="meta"><span class="rotulo sev">p0</span><span class="ref">app/report-view.tsx:2678 · lib/store.ts:23 · :36</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>t("report.defectsBlocking", { total: report.findings.length, … })</code>. No estado travado <code>report</code> é a saída de <code>redact()</code>, onde <code>findings.length ≤ 2</code>.</dd>
+        <dt>causa</dt>
+        <dd>O total real está em <code>locked.hidden</code>, lido em <span class="ref">:2148</span> e usado apenas para <code>previewOtherCount</code>.</dd>
+        <dt>impacto</dt>
+        <dd>Medido contra o fixture do repo:
+<pre><code>campo     t("report.defectsBlocking").total
+esperado  3   (2 visíveis + 1 retido)
+obtido    2</code></pre>
+        Com uma auditoria real de 6 achados, a tela anuncia 2 — na superfície cujo trabalho é justificar o pagamento.</dd>
+        <dt>solução</dt>
+        <dd class="solucao"><code>total: report.findings.length + locked.hidden</code>. Uma linha; os dois valores já estão em escopo.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>P1 — integridade, mensagem e defesas que não defendem</h2>
+  <p class="intro-secao">Quatro defeitos que não sangram receita hoje, mas comprometem o que o produto afirma sobre si.</p>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">05</span></div>
+    <div>
+      <h3>A saída do modelo sobrescreve a identidade do relatório</h3>
+      <div class="meta"><span class="rotulo sev">p1</span><span class="ref">lib/judge.ts:719-730 · lib/models.ts:104 · :158-174</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>O objeto final é montado como <code>{ url: cap.url, capturedAt, judgedBy, reportLocale, ...parsed, scores, finalScore }</code>. O spread vem <em>depois</em> dos campos de identidade.</dd>
+        <dt>causa</dt>
+        <dd>Em <code>jsonMode: "strict"</code> o <code>additionalProperties: false</code> bloquearia. Mas metade da escada roda em <code>jsonMode: "object"</code> por decisão explícita — e a faixa gratuita, que é o padrão desta fase, está nela. Ali <code>extractJson</code> só faz <code>JSON.parse</code>.</dd>
+        <dt>impacto</dt>
+        <dd>Verificado com um modelo simulado que devolve os quatro campos: os quatro foram sequestrados de uma vez.
+<pre><code>campo     report.url
+esperado  https://exemplo.test/
+obtido    https://sequestrada.test/</code></pre>
+        Desdobramentos: relatório descrevendo outra URL; <code>capturedAt</code> divergente faz <code>/api/runs</code> recusar com <code>REPORT_CAPTURE_MISMATCH</code> (<span class="ref">app/api/runs/route.ts:118</span>); procedência apagada; <code>reportLocale</code> errado produzindo prosa híbrida.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Mover <code>...parsed</code> para o início do literal. Uma linha, sem efeito colateral: os campos do app passam a vencer sempre, que é a intenção declarada em <span class="ref">lib/engine.ts</span>.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">06</span></div>
+    <div>
+      <h3><code>POST /api/report-localization</code> devolve 400 <code>TOKEN_EXPIRED</code> no fluxo feliz</h3>
+      <div class="meta"><span class="rotulo sev">p1</span><span class="ref">app/api/report-localization/route.ts:66 · :70 · app/api/dev/fixture/route.ts:238</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>Com interface e relatório no mesmo idioma (pt-BR), a tela ainda dispara duas chamadas de localização, ambas 400:
+<pre><code>← 400 {"code":"TOKEN_EXPIRED",
+       "error":"This report could not be verified for translation."}</code></pre></dd>
+        <dt>causa</dt>
+        <dd>O lacre é emitido sobre o relatório COMPLETO; o cliente devolve o REDIGIDO. A rota trata a divergência como lacre vencido — o lacre acabou de ser criado, de expirado não tem nada. Reproduzido pelo caminho de fixture; a rota é a mesma que serve relatórios reais.</dd>
+        <dt>impacto</dt>
+        <dd>Hoje é silencioso: o relatório renderiza assim mesmo. Mas o seletor de idioma sobre relatório travado provavelmente devolve "não conseguimos traduzir" no lugar do conteúdo — num produto com cinco dicionários completos. <strong>Falta confirmar numa auditoria real</strong> (custa uma chamada de modelo); não afirmo o que não medi.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Duas frentes: (a) não pedir localização quando <code>reportLocale</code> já é o locale da interface — elimina as duas chamadas inúteis; (b) aceitar o relatório redigido na verificação, ou devolver um código honesto (<code>REPORT_MISMATCH</code>) em vez de <code>TOKEN_EXPIRED</code>.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">07</span></div>
+    <div>
+      <h3>A guarda de esquema de <code>normalizeTarget</code> é código morto</h3>
+      <div class="meta"><span class="rotulo sev">p1</span><span class="ref">lib/dns-gate.ts:40 · :45-46</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>O ternário da linha 40 só preserva o esquema quando ele já casa <code>/^https?:\/\//i</code>; qualquer outro texto recebe <code>https://</code> na frente. Logo <code>u.protocol</code> é sempre <code>http:</code> ou <code>https:</code> quando a checagem das linhas 45-46 executa — ela não recusa nada.</dd>
+        <dt>causa</dt>
+        <dd>Ordem: normaliza antes de validar.</dd>
+        <dt>impacto</dt>
+        <dd>Medido:
+<pre><code>ftp://exemplo.com   → https://ftp//exemplo.com    host "ftp"     esperado: null
+file:///etc/passwd  → https://file///etc/passwd   host "file"    esperado: null
+mailto:a@b.com      → https://mailto:a@b.com/     host "b.com"   esperado: null</code></pre>
+        Os dois primeiros são contidos <em>por acidente</em> pelo portão de DNS (host sem ponto → <code>missing</code>), não pela guarda. O terceiro resolve para <code>b.com</code>, com <code>mailto</code>/<code>a</code> virando usuário e senha da URL.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Validar o esquema do texto original antes de prefixar. Encodado como teste de caracterização em <code>22-capture-errors.spec.ts:86-131</code>, pinando o comportamento atual com a instrução de trocar a asserção para <code>null</code> quando a linha 40 for corrigida.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">08</span></div>
+    <div>
+      <h3>A mensagem de conversão da cota é montada e descartada</h3>
+      <div class="meta"><span class="rotulo sev">p1</span><span class="ref">lib/limits.ts:85-93 · app/api/capture/route.ts:138</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>spendAnonAudit</code> devolve uma <code>message</code> específica, com concordância singular/plural cuidada. A rota descarta <code>anon.message</code> e emite <code>translate(locale, "audit.err.runFailed")</code>.</dd>
+        <dt>causa</dt>
+        <dd>O evento SSE de limite reusa o handler genérico de erro.</dd>
+        <dt>impacto</dt>
+        <dd>Medido no stream: o usuário lê <em>"The audit could not be completed. Try again in a moment."</em> — um erro técnico — na superfície que o comentário de <span class="ref">route.ts:150-155</span> chama de superfície de conversão. A frase boa existe nos 5 dicionários e nunca é vista.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Propagar <code>anon.message</code> no evento de <code>anon-limit</code>. O trabalho de redação já está feito.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>P2 — anotados</h2>
+  <p class="intro-secao">Registrados com evidência, sem urgência.</p>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">09</span></div>
+    <div>
+      <h3>O ranking vaza os domínios auditados para um terceiro</h3>
+      <div class="meta"><span class="rotulo sev">p2</span><span class="ref">app/ranking/ranking-view.tsx:30</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>/ranking</code> busca favicons em <code>icons.duckduckgo.com/ip3/&lt;domínio&gt;.ico</code>. Vários voltam 404 — três <code>console.error</code> por visita numa página pública.</dd>
+        <dt>impacto</dt>
+        <dd>A lista de domínios auditados é entregue a um terceiro a cada carregamento, num produto que mantém página de privacidade. Mais o acabamento da página pública.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Proxy do favicon pelo próprio servidor com cache, ou monograma da inicial. Anotado e não vermelho na suíte: depende do dado e do servidor deles.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">10</span></div>
+    <div>
+      <h3>A varredura de i18n não enxerga chaves por template</h3>
+      <div class="meta"><span class="rotulo sev">p2</span><span class="ref">scripts/i18n-fixture.ts:52 · diff-view.tsx:230, :237, :402</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>O regex <code>\bt\(\s*"</code> casa só literais. Escapam três famílias: <code>t(`diff.metric.${m.key}`)</code>, <code>t(`diff.reason.${m.reason}`)</code>, <code>t(`diff.findingReason.${f.reasonCode}`)</code>.</dd>
+        <dt>impacto</dt>
+        <dd>Hoje estão completas (11/11 métricas, 10/10 motivos, 7/7 códigos). Acrescentar uma <code>MetricSpec</code> em <code>lib/diff-metrics.ts</code> sem a chave publica <code>diff.metric.foo.bar</code> cru na tela de comparação — a tela de retenção — sem nenhum teste ver.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Já coberto: <code>80-i18n-dynamic.spec.ts</code> deriva as três listas do próprio código e confere nos 5 dicionários, mais um teste que verifica que a varredura antiga continua cega (guarda-do-guarda).</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">11</span></div>
+    <div>
+      <h3><code>GET /api/runs</code> responde 405, não 401</h3>
+      <div class="meta"><span class="rotulo sev">p2</span><span class="ref">app/api/runs/route.ts:81-84</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd>Só <code>POST</code> está implementado. Sem sessão, um <code>GET</code> devolve 405 — o 401 real está no POST.</dd>
+        <dt>impacto</dt>
+        <dd>Nenhum para o usuário; a proteção funciona. Custa tempo de quem for integrar ou depurar.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Documentar ou implementar a listagem. O teste assevera os dois status e anota a divergência em vez de fingir que o 401 estava lá.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-resolvido">
+    <div class="marcador"><span class="barra"></span><span class="num">12</span></div>
+    <div>
+      <h3>A <code>main</code> estava vermelha e ninguém sabia — corrigido</h3>
+      <div class="meta"><span class="rotulo sev">corrigido</span><span class="ref">scripts/diff-fixture.ts:73 · lib/diff-metrics.ts:193</span></div>
+      <dl>
+        <dt>problema</dt>
+        <dd><code>ok("e explica que a métrica ainda não existia", /anterior/.test(seoLegado.reason))</code> casava prosa em português. O trabalho de i18n transformou <code>reason</code> em chave de dicionário (<code>"seoLegacy"</code>), e o texto migrou para <code>lib/i18n/dictionaries/*</code>.</dd>
+        <dt>causa</dt>
+        <dd>Teste desatualizado — o produto está certo. Agravante: não existia agregador, então <code>test:diff</code> falhava sozinho sem ninguém rodar.</dd>
+        <dt>solução</dt>
+        <dd class="solucao">Asserção trocada para <code>seoLegado.reason === "seoLegacy"</code>, com comentário explicando a migração. E criado <code>npm test</code>, que encadeia os seis fixtures — um deles quebrado agora derruba o comando inteiro.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>Como a suíte foi construída</h2>
+  <p class="intro-secao">As decisões que fazem cada falha apontar para um lugar específico — e que mantêm o custo em zero.</p>
+
+  <div class="tabela-env">
+    <table>
+      <thead><tr><th>camada</th><th>onde</th><th>openrouter</th><th>escreve</th><th>cobre</th></tr></thead>
+      <tbody>
+        <tr><td class="n">L1 puro</td><td class="n">scripts/*-fixture.ts</td><td>não</td><td>não</td><td>diff, política de admin, i18n literal, same-origin, locale</td></tr>
+        <tr><td class="n">L2 medição</td><td class="n">specs 20–22</td><td>não</td><td>não</td><td><code>measureInPage</code> no DOM, SEO técnico, erros de captura</td></tr>
+        <tr><td class="n">L3 rotas</td><td class="n">specs 50, 51, 70</td><td>não</td><td>não</td><td>cota, lacre e anti-replay, fronteiras de auth</td></tr>
+        <tr><td class="n">L4 interface</td><td class="n">specs 10, 40, 41, 80</td><td>não</td><td>não</td><td>fluxo anônimo completo, relatório travado, páginas públicas</td></tr>
+        <tr><td class="n">L5 @live</td><td class="n">spec 90</td><td><strong>1 auditoria</strong></td><td>telemetria</td><td>fumaça real — opt-in por <code>E2E_LIVE=1</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="item g-baixo" style="border-top:0;padding-top:2rem">
+    <div class="marcador"><span class="barra" style="background:var(--rule-forte)"></span></div>
+    <div>
+      <h3>Asseverar sobre saída de LLM sem gerar teste instável</h3>
+      <dl>
+        <dt>a regra de ouro</dt>
+        <dd>Nenhuma asserção compara <code>verdict</code>, <code>justification</code>, <code>diagnosis</code> ou <code>prescription</code> com texto esperado. Se um teste falhar por causa de prosa, o defeito é do teste.</dd>
+        <dt>o que sobra</dt>
+        <dd><strong>Estrutura</strong> (9 eixos por igualdade de conjunto, enums, campos obrigatórios) · <strong>faixa</strong> (0–10, nunca <code>=== 6.2</code>) · <strong>consistência interna</strong> (placar × média, placar × achados, carimbo recalculado do próprio <code>rigor.ts</code>) · <strong>aterragem</strong>: se a evidência cita um número apresentado como medido, ele tem que existir nas medições. Foi a aterragem que pegou o fixture <code>hallucinated.json</code> — que passa no piso de qualidade, porque o piso conta dígitos e não os confere.</dd>
+        <dt>as três classes de falha</dt>
+        <dd>Decididas por regra: <strong>DEFEITO-DO-APP</strong> (camada determinística, repetiu N vezes) · <strong>FLAKY-REDE/MODELO</strong> (camada <code>@live</code>, ou ≤1 divergência em N) · <strong>DEFEITO-DO-TESTE</strong> (preflight reprovado ou fixture inconsistente — a suíte se recusa a acusar o produto). Códigos de saída 0/1/2/3, nenhum outro.</dd>
+        <dt>o bloco de falha</dt>
+        <dd>
+<pre><code>✗ FALHA  41-report-render › a contagem de defeitos no travado…
+  classe       DEFEITO-DO-APP
+  superficie   app/report-view.tsx › cabeçalho da tabela de achados
+  chamador     estado travado (anônimo, antes de pagar)
+  campo        texto de t("report.defectsBlocking").total
+  esperado     3   — 2 visíveis + 1 retido
+  obtido       2
+  determinismo constante — é aritmética, não amostra
+  suspeito     app/report-view.tsx:2678
+               lib/store.ts:23
+  reproduzir   npx playwright test … -g "a contagem de defeitos"</code></pre>
+        Regra de revisão: asserção que não consegue preencher <code>campo</code> e <code>suspeito</code> não entra.</dd>
+        <dt>isolamento</dt>
+        <dd>As duas rotas caras são interceptadas no navegador com SSE gravado; <code>judge()</code> é exercitado em processo com <code>globalThis.fetch</code> stubado e contador que <em>lança</em> se qualquer host externo for tocado. Cota usa <code>x-forwarded-for</code> em <code>10.255.x.y</code> (RFC 1918) porque o Upstash é compartilhado com produção. Banco só com <code>E2E_DB=1</code> e guarda de branch que aborta com rc=3. Zero Blob. O plano B do Firecrawl é desligado explicitamente — a chave existe no <code>.env.local</code> e cada teste de site bloqueado pagaria crédito.</dd>
+        <dt>defeito aberto ≠ teste pulado</dt>
+        <dd>Os defeitos não corrigidos ficam como <code>test.fail()</code>: a asserção roda, a suíte fica verde, e no dia em que alguém corrigir o Playwright reporta <em>"expected to fail, but passed"</em> e a suíte fica vermelha até a marcação sair. Um defeito marcado assim não sobrevive à própria correção; um <code>skip</code> sobreviveria para sempre.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<div class="fecho">
+  <span class="rotulo">estado da branch</span>
+  <p><code>testes-e2e</code>, não commitada e não empurrada. <code>npm run typecheck</code> limpo, <code>npm test</code> verde, <code>npm run test:e2e</code> em 78/0/5. Nova devDependency: <code>@playwright/test@1.62.1</code>, mesma versão da runtime já presente — <code>du -sh ~/Library/Caches/ms-playwright</code> não muda depois do install, o que prova que nenhum browser foi baixado.</p>
+  <p>Os 5 pulados: 3 exigem sessão do Clerk (<code>npm run test:login</code>) e 2 são a camada <code>@live</code>, que nunca rodou.</p>
+  <p><strong>Sugestão de recorte para PR:</strong> primeiro a correção de <code>scripts/diff-fixture.ts:73</code> mais o agregador <code>npm test</code> — duas linhas que devolvem a <code>main</code> ao verde e são revisáveis em um minuto. A suíte inteira vai num segundo PR, onde a conversa é sobre a devDependency e sobre quais dos 12 defeitos viram issue.</p>
+</div>
+
+<div class="irmao">
+  <span class="rotulo">a mesma investigação, sem termos técnicos</span>
+  <p style="margin:0"><a href="index.html">Relatório em linguagem simples</a> — para quem decide o produto, não o código.</p>
+</div>
+
+</div>
+
+</body>
+</html>

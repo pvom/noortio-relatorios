@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Os 12 problemas que os testes automáticos acharam no Noortio, em linguagem simples.">
+<meta property="og:title" content="O que os testes acharam">
+<meta property="og:description" content="Os 12 problemas que os testes automáticos acharam no Noortio, em linguagem simples.">
+<meta property="og:type" content="article">
+<title>O que os testes acharam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Reset mínimo — fora do artefato não há o wrapper que fazia isto. */
+  *,*::before,*::after{box-sizing:border-box}
+  img,svg{max-width:100%;height:auto}
+  :root{
+    /* Fundo claro pedido pelo Pedro, mas o sistema é o do próprio Noortio,
+       invertido: o mono domina os rótulos, a grotesk carrega a prosa, e a
+       severidade usa a escala de desvio da marca — nunca verde. */
+    --ground:#f6f5f1;
+    --surface:#fffefb;
+    --ink:#17180f;
+    --ink-2:#5c5955;
+    --ink-3:#8a877f;
+    --rule:#dedbd2;
+    --rule-forte:#c9c5b8;
+    --alto:#b8402f;
+    --medio:#a2661a;
+    --baixo:#7d6a2a;
+    --resolvido:#3f4a52;
+    --link:#4a6300;
+    --marca:#c5fd24;
+    --escala:1.5;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--ink);
+    font-family:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:17px;
+    line-height:1.65;
+    letter-spacing:-.006em;
+  }
+  .env{max-width:53rem;margin:0 auto;padding:0 1.5rem 6rem}
+
+  .rotulo{
+    font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    color:var(--ink-2);
+    text-transform:lowercase;
+  }
+
+  /* ── abertura ─────────────────────────────────────────── */
+  header{padding:5rem 0 3rem;display:flex;flex-direction:column;gap:1.5rem}
+  h1{
+    font-size:clamp(2.1rem,5.2vw,3.4rem);
+    line-height:1.06;
+    letter-spacing:-.028em;
+    font-weight:600;
+    margin:0;
+    text-wrap:balance;
+    max-width:20ch;
+  }
+  .lede{font-size:1.2rem;line-height:1.55;color:var(--ink-2);max-width:56ch;margin:0}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  .placar{
+    display:flex;flex-wrap:wrap;gap:0;
+    border-top:1px solid var(--rule-forte);
+    border-bottom:1px solid var(--rule-forte);
+    margin-top:1rem;
+  }
+  .placar div{
+    flex:1 1 8rem;padding:1.15rem 1.25rem 1.15rem 0;
+    display:flex;flex-direction:column;gap:.3rem;
+  }
+  .placar b{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:1.75rem;font-weight:500;letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;
+    line-height:1;
+  }
+
+  /* ── seções ───────────────────────────────────────────── */
+  section{padding-top:3.5rem}
+  h2{
+    font-size:1.02rem;font-weight:600;margin:0 0 .4rem;
+    letter-spacing:-.01em;
+  }
+  .intro-secao{color:var(--ink-2);max-width:60ch;margin:0 0 2.25rem}
+
+  /* ── um defeito ───────────────────────────────────────── */
+  .item{
+    border-top:1px solid var(--rule);
+    padding:2rem 0 .5rem;
+    display:grid;
+    grid-template-columns:2.5rem 1fr;
+    gap:0 1rem;
+  }
+  .item:first-of-type{border-top:1px solid var(--rule-forte)}
+  .marcador{padding-top:.55rem}
+  /* A barrinha de severidade é a do design system do Noortio:
+     3×12px, sem contorno, sem raio total. Não é pílula. */
+  .barra{width:3px;height:14px;border-radius:1px;display:block;background:var(--baixo)}
+  .g-alto .barra{background:var(--alto)}
+  .g-medio .barra{background:var(--medio)}
+  .g-resolvido .barra{background:var(--resolvido)}
+  .num{
+    display:block;margin-top:.55rem;
+    font-family:"IBM Plex Mono",monospace;font-size:11px;
+    color:var(--ink-3);font-variant-numeric:tabular-nums;
+  }
+  .item h3{
+    margin:0 0 .15rem;font-size:1.32rem;line-height:1.25;
+    letter-spacing:-.018em;font-weight:600;text-wrap:balance;
+  }
+  .grau{display:block;margin-bottom:1.15rem}
+  .g-alto .grau{color:var(--alto)}
+  .g-medio .grau{color:var(--medio)}
+  .g-baixo .grau{color:var(--baixo)}
+  .g-resolvido .grau{color:var(--resolvido)}
+
+  dl{margin:0;display:flex;flex-direction:column;gap:.9rem}
+  dt{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:11px;letter-spacing:.06em;color:var(--ink-2);
+    margin-bottom:.15rem;
+  }
+  dd{margin:0;max-width:62ch}
+  dd + dt{margin-top:.35rem}
+  .solucao{
+    background:var(--surface);
+    border-left:2px solid var(--rule-forte);
+    padding:.85rem 1rem;
+    max-width:64ch;
+  }
+
+  .cita{
+    font-family:"IBM Plex Mono",monospace;
+    font-size:.87rem;line-height:1.5;
+    color:var(--ink);
+    background:var(--surface);
+    border:1px solid var(--rule);
+    padding:.7rem .85rem;
+    display:block;
+    overflow-x:auto;
+    white-space:pre;
+    margin:.55rem 0 0;
+  }
+
+  /* ── fecho ────────────────────────────────────────────── */
+  .fecho{
+    margin-top:4rem;border-top:2px solid var(--ink);
+    padding-top:2rem;display:flex;flex-direction:column;gap:1.1rem;
+  }
+  .fecho p{margin:0;max-width:60ch}
+  a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{background:var(--marca);color:var(--ink);text-decoration:none}
+  a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:2px}
+  .irmao{
+    margin-top:2.5rem;padding:1.15rem 0;
+    border-top:1px solid var(--rule-forte);
+    border-bottom:1px solid var(--rule-forte);
+    display:flex;flex-direction:column;gap:.3rem;
+  }
+  @media (max-width:640px){
+    body{font-size:16px}
+    .item{grid-template-columns:1.5rem 1fr}
+    .placar div{flex-basis:6.5rem}
+  }
+</style>
+
+<div class="env">
+
+<header>
+  <span class="rotulo">noortio · relatório de testes · 26 de agosto de 2026</span>
+  <h1>O que os testes acharam</h1>
+  <p class="lede">Escrevi uma bateria de testes automáticos para o Noortio e rodei. Ela achou <strong>12 problemas reais</strong> — quatro deles custam dinheiro ou fazem o site prometer uma coisa e entregar outra. Esta página explica cada um sem termos técnicos. Nada foi consertado: só encontrado e documentado.</p>
+
+  <div class="placar">
+    <div><span class="rotulo">testes que passam</span><b>78</b></div>
+    <div><span class="rotulo">problemas achados</span><b>12</b></div>
+    <div><span class="rotulo">custo por rodada</span><b>R$ 0</b></div>
+    <div><span class="rotulo">tempo</span><b>1min 54s</b></div>
+  </div>
+</header>
+
+<section>
+  <h2>Os quatro que doem no bolso</h2>
+  <p class="intro-secao">Estes não são detalhes de programação. São coisas que afetam quanto o produto cobra, o que ele entrega de graça e o que ele promete ao visitante.</p>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">01</span></div>
+    <div>
+      <h3>A nota final do relatório pode ser inventada</h3>
+      <span class="rotulo grau">gravidade alta</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>O Noortio dá uma nota de 0 a 10 para cada site auditado. Essa nota deveria ser a média das nove notas parciais (clareza, prova, conversão…). Mas ninguém confere se ela é. A inteligência artificial que faz a auditoria simplesmente escreve um número, e o sistema aceita.</dd>
+        <dt>por que acontece</dt>
+        <dd>Todas as outras partes do relatório têm um conferente: se vierem incompletas, o sistema recusa e tenta de novo. A nota final é a única peça sem esse conferente.</dd>
+        <dt>o que isso custa</dt>
+        <dd>O teste provou na prática: um relatório com nove notas cuja média é <strong>4,2</strong> e nota final <strong>9</strong> passa por todas as checagens sem um alerta. E esse 9 é o número mais visível do produto — vai para o ranking público, para a barra grande no topo do relatório e para a comparação entre versões do site. Um cliente pode receber "seu site tirou 9" quando a auditoria disse 4.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Fazer o sistema recalcular a média das nove notas e recusar o relatório quando a nota final não bater com ela — do mesmo jeito que já recusa as outras partes. É a mesma regra que já existe, aplicada a mais um campo.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">02</span></div>
+    <div>
+      <h3>Quando a auditoria falha, o crédito grátis some — e a tela diz que não sumiu</h3>
+      <span class="rotulo grau">gravidade alta</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Quem não tem conta pode auditar 3 páginas por dia. Se a auditoria falhar (site bloqueado, fora do ar, demorado demais), o crédito é gasto assim mesmo. A tela de erro, porém, informa: <em>"crédito não consumido"</em>.</dd>
+        <dt>por que acontece</dt>
+        <dd>O sistema debita o crédito antes de tentar a captura da página, e não devolve quando a tentativa falha. Não existe devolução em lugar nenhum do código.</dd>
+        <dt>o que isso custa</dt>
+        <dd>O teste mediu: com 1 crédito disponível, uma auditoria que falhou consumiu esse crédito, e a tentativa seguinte — numa página que funcionaria — foi barrada. Pior: o botão "tentar de novo" refaz tudo e queima mais um crédito. Um visitante novo pode gastar as 3 chances do dia sem receber um único relatório, achando que não gastou nenhuma.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Duas saídas, e a escolha é de produto: devolver o crédito quando a auditoria falha (aí a mensagem passa a ser verdade), ou trocar a mensagem para dizer o que de fato acontece. A primeira é mais justa; a segunda é mais barata.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">03</span></div>
+    <div>
+      <h3>O relatório grátis está entregando a parte paga</h3>
+      <span class="rotulo grau">gravidade alta</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>A regra do produto é clara: o relatório grátis mostra <em>quais</em> são os defeitos; o pago mostra <em>como</em> consertar. Só que existe uma seção chamada "o que fazer esta semana" que aparece antes do paywall — e ela é exatamente o como consertar, em forma de lista.</dd>
+        <dt>por que acontece</dt>
+        <dd>A função que apaga a parte paga antes de mostrar o relatório apaga sete campos diferentes e esquece justamente esse. Está escrito no próprio código que a cura fica retida; o código faz outra coisa.</dd>
+        <dt>o que isso custa</dt>
+        <dd>O teste confirmou os 5 itens visíveis sem pagar, entre eles <em>"Troque o H1 por uma frase que nomeie o usuário e o resultado"</em> e <em>"Corte o LCP de 4,4s para abaixo de 2,5s"</em>. É a receita do produto, de graça — e quem lê isso tem pouco motivo para pagar pelo resto.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Incluir essa lista na mesma função que já esconde os outros campos. É uma linha. A decisão real é se a lista deve mesmo ser paga — talvez ela seja a isca de propósito, e nesse caso o texto do código é que está errado.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-alto">
+    <div class="marcador"><span class="barra"></span><span class="num">04</span></div>
+    <div>
+      <h3>O site vende a própria auditoria por menos do que ela entregou</h3>
+      <span class="rotulo grau">gravidade alta</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>No relatório grátis aparece uma linha do tipo "2 defeitos · 1 bloqueante". Esse 2 não é o número de defeitos encontrados: é o número de defeitos <em>mostrados</em>. Se a auditoria achou 6, a tela ainda diz 2.</dd>
+        <dt>por que acontece</dt>
+        <dd>A tela conta os itens da lista que está vendo, e a lista que ela está vendo já foi cortada para a prévia. O número verdadeiro existe e está guardado ali do lado — só não é usado.</dd>
+        <dt>o que isso custa</dt>
+        <dd>É a tela cujo trabalho é convencer alguém a pagar, e ela anuncia menos valor do que o produto produziu. Anunciar "6 defeitos, 2 visíveis" é um argumento de venda; anunciar "2 defeitos" é o contrário.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Somar os defeitos visíveis com os retidos — os dois números já estão disponíveis na tela. Correção de uma linha, com efeito direto na conversão.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>Os que quebram a experiência</h2>
+  <p class="intro-secao">Não custam dinheiro diretamente, mas fazem o produto parecer menos cuidadoso do que é — e, num produto cuja tese é "critério", parecer descuidado é o defeito.</p>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">05</span></div>
+    <div>
+      <h3>O relatório pode falar de um site que não é o auditado</h3>
+      <span class="rotulo grau">gravidade média</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>O endereço do site, a data da captura e o nome do motor de julgamento são definidos pelo sistema — mas se a inteligência artificial devolver esses mesmos campos na resposta dela, os dela vencem.</dd>
+        <dt>por que acontece</dt>
+        <dd>É a ordem em que as informações são juntadas: o sistema escreve os dados corretos primeiro e a resposta da IA é colada por cima. Nos modelos gratuitos — que são os usados por padrão — não há nada impedindo isso.</dd>
+        <dt>o que isso custa</dt>
+        <dd>O teste sequestrou os quatro campos de uma vez. Na prática: um relatório que diz auditar um endereço e descreve outro. Para um produto que vende veredito confiável, é o pior defeito possível.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Inverter a ordem: colar a resposta da IA primeiro e escrever os dados do sistema por cima. Uma linha, e o problema deixa de existir.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">06</span></div>
+    <div>
+      <h3>A tradução do relatório falha dizendo que o prazo expirou</h3>
+      <span class="rotulo grau">gravidade média</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Durante uma auditoria normal, o site pede a tradução do relatório duas vezes — mesmo quando não há nada para traduzir — e recebe um erro: <em>"não foi possível verificar este relatório para tradução"</em>.</dd>
+        <dt>por que acontece</dt>
+        <dd>O relatório é lacrado inteiro, mas o que volta para conferência é a versão cortada da prévia. Como as duas não batem, o sistema conclui que o lacre é inválido — e a mensagem culpa o prazo, que não tem nada a ver.</dd>
+        <dt>o que isso custa</dt>
+        <dd>Hoje passa despercebido porque o relatório aparece assim mesmo. Mas quem trocar de idioma numa auditoria ainda não paga provavelmente vê "não conseguimos traduzir" no lugar do relatório — e o produto tem cinco idiomas justamente para ser usado em vários.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Primeiro parar de pedir tradução quando o idioma já é o certo. Depois decidir se a versão cortada pode ser traduzida — e, se puder, aceitar. Vale confirmar numa auditoria real antes de mexer.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">07</span></div>
+    <div>
+      <h3>A trava que rejeita endereços inválidos nunca funcionou</h3>
+      <span class="rotulo grau">gravidade média</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Existe no código uma verificação para recusar coisas que não são endereços de site. Ela nunca é acionada: a linha anterior já transformou tudo em endereço antes de a verificação rodar.</dd>
+        <dt>por que acontece</dt>
+        <dd>Qualquer texto colado ganha um "https://" na frente automaticamente. Quando a verificação vai conferir, já não há o que recusar.</dd>
+        <dt>o que isso custa</dt>
+        <dd>Colar um e-mail como <span class="cita">mailto:alguem@empresa.com</span> faz o sistema auditar <strong>empresa.com</strong>, tratando o resto como usuário e senha. Não é grave hoje — mas a defesa que se acredita ter, não se tem.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Conferir o endereço original antes de acrescentar o "https://", não depois.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-medio">
+    <div class="marcador"><span class="barra"></span><span class="num">08</span></div>
+    <div>
+      <h3>A melhor frase de venda do produto nunca chega à tela</h3>
+      <span class="rotulo grau">gravidade média</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Quando alguém esgota as auditorias grátis do dia, existe uma frase escrita com cuidado — <em>"você já usou a auditoria gratuita de hoje; crie uma conta…"</em> — inclusive com singular e plural certos. Ela é montada e jogada fora.</dd>
+        <dt>por que acontece</dt>
+        <dd>A parte que responde ao visitante ignora a frase pronta e manda uma genérica no lugar.</dd>
+        <dt>o que isso custa</dt>
+        <dd>O visitante lê "a auditoria não pôde ser concluída, tente daqui a pouco" — um erro técnico — exatamente no momento em que o produto tinha o melhor motivo do dia para pedir um cadastro.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Usar a frase que já existe. O trabalho está feito; só não está ligado.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section>
+  <h2>Os menores, e um que já consertei</h2>
+  <p class="intro-secao">Anotados para não se perderem. Nenhum é urgente.</p>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">09</span></div>
+    <div>
+      <h3>Os endereços auditados são enviados a um site de terceiros</h3>
+      <span class="rotulo grau">gravidade baixa</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>A página de ranking busca o ícone de cada site auditado num serviço externo (o buscador DuckDuckGo), o que significa entregar a esse serviço a lista de quem foi auditado. Vários ícones nem existem, e cada visita gera erros no navegador.</dd>
+        <dt>o que isso custa</dt>
+        <dd>É uma questão de privacidade num produto que tem página de política de privacidade — e um detalhe de acabamento numa página pública.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Buscar o ícone pelo próprio servidor, ou não mostrar ícone. Decisão rápida, de dono do produto.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">10</span></div>
+    <div>
+      <h3>A conferência de traduções tem um ponto cego</h3>
+      <span class="rotulo grau">gravidade baixa</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Existe uma verificação automática que garante que todo texto da interface tem tradução nos cinco idiomas. Ela não enxerga três famílias de textos da tela de comparação entre versões.</dd>
+        <dt>o que isso custa</dt>
+        <dd>Hoje está tudo traduzido, por sorte. No dia em que alguém acrescentar uma medida nova sem a tradução, aparece um código cru no meio da tela — e justamente na tela que existe para segurar o cliente.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Já resolvido pela suíte nova: agora existem testes que conferem essas três famílias, derivando a lista do próprio código.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-baixo">
+    <div class="marcador"><span class="barra"></span><span class="num">11</span></div>
+    <div>
+      <h3>Um endereço interno responde o erro errado</h3>
+      <span class="rotulo grau">gravidade baixa</span>
+      <dl>
+        <dt>o que acontece</dt>
+        <dd>Pedir a lista de auditorias salvas sem estar logado devolve "método não permitido" em vez de "faça login". A proteção existe e funciona; só a resposta é confusa.</dd>
+        <dt>o que isso custa</dt>
+        <dd>Nada para o usuário final. Custa tempo de quem for integrar ou depurar depois.</dd>
+        <dt>como resolver</dt>
+        <dd class="solucao">Deixar como está e documentar, ou implementar a listagem. Não é urgente.</dd>
+      </dl>
+    </div>
+  </article>
+
+  <article class="item g-resolvido">
+    <div class="marcador"><span class="barra"></span><span class="num">12</span></div>
+    <div>
+      <h3>O repositório estava com um teste quebrado — e ninguém sabia</h3>
+      <span class="rotulo grau">já corrigido</span>
+      <dl>
+        <dt>o que acontecia</dt>
+        <dd>Um dos testes que já existiam falhava desde que o sistema ganhou múltiplos idiomas. Como não havia um comando que rodasse todos de uma vez, ninguém percebeu.</dd>
+        <dt>por que acontecia</dt>
+        <dd>O teste procurava uma palavra em português num campo que passou a guardar um código de tradução. O produto está certo; o teste é que envelheceu.</dd>
+        <dt>o que foi feito</dt>
+        <dd class="solucao">Corrigido (duas linhas), e criado o comando <span class="cita">npm test</span> que roda todos os testes antigos de uma vez — para que um teste quebrado volte a ser visível no dia em que quebrar.</dd>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<div class="fecho">
+  <span class="rotulo">o que isso não é</span>
+  <p>Nada aqui foi consertado, com uma exceção anotada acima. Os testes encontram e documentam; a decisão de corrigir — e a ordem — é de quem é dono do produto.</p>
+  <p>Os quatro problemas de gravidade alta são todos de correção pequena: nenhum exige refazer nada. O de maior retorno imediato é o número 04, que muda uma soma e afeta direto quantas pessoas decidem pagar.</p>
+</div>
+
+<div class="irmao">
+  <span class="rotulo">a mesma investigação, com o detalhe técnico</span>
+  <p style="margin:0"><a href="tecnico.html">Relatório técnico</a> — evidência medida, arquivo e linha de cada defeito, e como a suíte foi construída.</p>
+</div>
+
+</div>
+
+</body>
+</html>
