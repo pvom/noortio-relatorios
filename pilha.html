@@ -124,7 +124,8 @@
       <tr><td class="nome">acessibilidade</td><td><strong>axe-core</strong> injetado</td><td class="n zero">US$ 0</td><td>meia tarde de integração; passa a citar regra e critério WCAG</td></tr>
       <tr><td class="nome">contraste</td><td>WCAG 2 próprio + <strong>APCA</strong></td><td class="n zero">US$ 0</td><td>biblioteca open source; dois algoritmos lado a lado</td></tr>
       <tr><td class="nome">performance</td><td><strong>PSI + CrUX</strong></td><td class="n zero">US$ 0</td><td>25.000/dia. Latência de 10–30 s — <strong>tem de rodar em paralelo</strong> com a captura</td></tr>
-      <tr><td class="nome">SEO on-page</td><td>própria (<code>lib/seo.ts</code>)</td><td class="n zero">US$ 0</td><td>13 códigos com pesos declarados; já é boa</td></tr>
+      <tr><td class="nome">SEO on-page</td><td>própria (<code>lib/seo.ts</code>)</td><td class="n zero">US$ 0</td><td>13 códigos com pesos declarados; continua sendo o motor do produto</td></tr>
+      <tr><td class="nome">SEO on-page externo</td><td><strong>DataForSEO Instant Pages</strong><br><span class="rotulo">decidido em 27/ago</span></td><td class="n paga">US$ 0,00015<br>por auditoria</td><td>depósito mínimo de US$ 50. Cem verificações que não vale a pena reimplementar — <strong>mas é uma segunda busca da página</strong>, de outro IP e outro instante. Ver abaixo</td></tr>
       <tr><td class="nome">SEO de campo</td><td>Search Console API</td><td class="n zero">US$ 0</td><td>só para cliente que verifica a propriedade — logo, puxa cadastro</td></tr>
       <tr><td class="nome">performance premium</td><td>WebPageTest — camada gratuita</td><td class="n zero">US$ 0</td><td>300 testes/mês. Reservar para relatório de destaque, não gastar no anônimo</td></tr>
       <tr><td class="nome">plano B de captura</td><td>Firecrawl — camada gratuita</td><td class="n zero">US$ 0</td><td>1.000 créditos/mês; já integrado</td></tr>
@@ -185,6 +186,33 @@
   </div>
 </section>
 
+<section class="fase">
+  <div class="fase-cabeca">
+    <span class="fase-n">decidido</span>
+    <h2>SEO on-page com DataForSEO</h2>
+    <span class="preco-fase">US$ 0,00015<br>por auditoria</span>
+  </div>
+  <p class="gatilho"><b>Decisão de 27/ago:</b> entra já, na camada base. <b>Módulo implementado e testado</b> (<code>lib/seo-dataforseo.ts</code>, 7 testes), inerte enquanto não houver credencial.</p>
+
+  <div class="nota risco">
+    <span class="rotulo">o que a documentação do fornecedor confirmou, e que muda o desenho</span>
+    <p>O endpoint <code>instant_pages</code> <strong>busca a página por conta própria</strong> e não aceita HTML fornecido. Ou seja: outro IP, outro instante, possivelmente outro conteúdo — um site que negocia por geolocalização, faz teste A/B ou barra datacenter (a mesma razão pela qual existe o plano B do Firecrawl) devolve a eles algo diferente do que o nosso navegador viu.</p>
+    <p>Por isso o resultado <strong>não é fundido nas medições da captura</strong>. Ele viaja com procedência própria — instante, URL final e status que o <em>fornecedor</em> recebeu — e uma bandeira <code>divergedFromCapture</code> que acende quando as duas leituras discordam da URL final. Misturar dois instantâneos e apresentar ambos como "medido" quebraria a promessa central do produto.</p>
+  </div>
+
+  <div class="nota">
+    <span class="rotulo">por que a camada base, e não a cara</span>
+    <p><code>enable_javascript</code> custa 10× e <code>enable_browser_rendering</code> custa 34× — e o que elas entregam (render, Core Web Vitals) nós já medimos melhor, no próprio navegador, dentro da captura que gerou as fotos. Pagar por renderização de terceiro seria comprar uma versão pior do que já existe.</p>
+    <p>O que o fornecedor acrescenta de verdade são as verificações que não vale a pena reimplementar: h1 ausente, título longo ou duplicado, imagem sem alt, recursos que bloqueiam renderização, resposta sem compressão, marcação obsoleta.</p>
+  </div>
+
+  <div class="nota bom">
+    <span class="rotulo">estado da implementação</span>
+    <p><strong>Pronto:</strong> o módulo, com tipo próprio (não reusa o enum fechado de <code>SeoIssue</code> — injetar códigos novos ali publicaria chave crua na tela), ordem estável dos achados, falha silenciosa por contrato, e a checagem do envelope <code>20000</code> — o fornecedor devolve HTTP 200 com erro dentro do corpo.</p>
+    <p><strong>Falta, e é decisão de produto:</strong> credenciais (depósito de US$ 50), onde os achados aparecem no relatório, e as chaves de tradução <code>seo.dfs.*</code> nos cinco dicionários. Sem elas, chave crua na tela — o defeito nº 10 outra vez.</p>
+  </div>
+</section>
+
 <!-- ════════ FASE 1 ════════ -->
 <section class="fase f1">
   <div class="fase-cabeca">
@@ -220,7 +248,7 @@
     <thead><tr><th>entra</th><th>custo</th><th>o que compra</th><th>tradeoff</th></tr></thead>
     <tbody>
       <tr><td class="nome">WebPageTest Pro</td><td class="n paga">~US$ 15–19/mês<br>1.000 testes</td><td>dispositivo e rede reais, múltiplas localidades, filmstrip — evidência de nível agência no plano pago</td><td>~US$ 0,019 por teste. Só faz sentido se aparecer no relatório pago</td></tr>
-      <tr><td class="nome">DataForSEO On-Page</td><td class="n paga">US$ 50 depósito<br>US$ 0,000125/página</td><td>a varredura de site: 500 páginas por 6 centavos. Destrava o produto "site" ao lado do produto "página"</td><td>exige entidade de site no schema e cota em páginas — é feature nova, não motor novo</td></tr>
+      <tr><td class="nome">DataForSEO On-Page</td><td class="n paga">US$ 50 depósito<br>US$ 0,00015/página</td><td>a varredura de site: 500 páginas por 6 centavos. Destrava o produto "site" ao lado do produto "página"</td><td>exige entidade de site no schema e cota em páginas — é feature nova, não motor novo</td></tr>
     </tbody>
   </table></div>
 
