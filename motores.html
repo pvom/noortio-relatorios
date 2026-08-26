@@ -146,6 +146,12 @@
   </table></div>
   <p class="legenda-tab">O DebugBear é excelente no que faz — monitoramento contínuo de sites que você controla. O Noortio audita URL de terceiro, sob demanda, uma vez. É produto para outra pergunta.</p>
 
+  <div class="nota">
+    <span class="rotulo">insumo, nunca manchete</span>
+    <p>Um número que o cliente obtém sozinho e de graça <strong>comoditiza o relatório se aparecer como manchete</strong> — "seu site tirou 62 no PageSpeed" ele roda em trinta segundos. O mesmo número dentro de um achado não comoditiza nada: <em>"o LCP de campo dos seus usuários é 4,4 s no p75; o elemento LCP é a imagem do hero, a mesma cujo H1 não nomeia o comprador"</em> é uma frase que nenhum motor externo produz.</p>
+    <p>A diferenciação nunca foi o número — é o protocolo de onze passagens, a forense da dobra e a reconciliação. Regra a manter escrita: <strong>o PSI entra como evidência, nunca como score no topo.</strong></p>
+  </div>
+
   <div class="nota bom">
     <span class="rotulo">o melhor negócio da lista</span>
     <p>O PSI dá throttling padronizado e dado de usuário real por <strong>zero</strong>, e a cota de 25.000/dia é ordens de grandeza acima do volume atual. O único preço é latência de 10–30 s — que sai do caminho crítico se a chamada for disparada <strong>em paralelo</strong> com a captura própria.</p>
@@ -317,6 +323,98 @@
 </section>
 
 <section>
+  <h2>Varredura de site inteiro</h2>
+  <p class="resumo">Outra categoria, e antes do preço vem um aviso de produto: hoje a unidade do Noortio é <strong>uma página</strong>. Uma varredura completa é outra unidade — e mexe no modelo de dados, na cota e no diff.</p>
+
+  <div class="nota risco">
+    <span class="rotulo">o que muda antes de qualquer fatura</span>
+    <p>No schema atual, <code>projects</code> é o domínio e <code>pages</code> é o caminho, e o diff compara <em>a mesma página</em> entre duas execuções. Varredura precisa de uma entidade de site, de cota medida em páginas rastreadas (não em auditorias), e de um diff de nível de site — "12 páginas novas sem description" em vez de "o H1 desta página mudou".</p>
+    <p>E há um limite duro de custo: o julgamento profundo custa US$ 0,008 <em>por página</em>. Rodá-lo em 500 páginas dá US$ 4 por varredura e um relatório que ninguém lê. <strong>Varredura e auditoria são features diferentes</strong> — a varredura acha <em>onde</em> olhar; a auditoria é o que vocês já fazem, aplicada às páginas que a varredura elegeu.</p>
+  </div>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>varredura de 500 páginas</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">DataForSEO On-Page API</td>
+        <td class="n">US$ 0,000125 / página<br>+JS: US$ 0,00125<br>+Lighthouse: US$ 0,00425<br>depósito mín. US$ 50</td>
+        <td class="n"><strong>US$ 0,06</strong><br>US$ 0,63 com JS<br>US$ 2,13 com Lighthouse</td>
+        <td>API pura, pré-paga, sem assento e sem assinatura: 100+ verificações técnicas, dados estruturados, links quebrados</td>
+        <td class="vd sim">a escolha óbvia</td>
+      </tr>
+      <tr>
+        <td class="nome">Rastreador próprio<br><span class="rotulo">+ browser quente</span></td>
+        <td class="n">US$ 0,12 / hora de browser</td>
+        <td class="n">~US$ 0,08<br>+ engenharia</td>
+        <td>controle total e nenhum fornecedor no caminho</td>
+        <td class="vd talvez">barato em infra, caro em tempo</td>
+      </tr>
+      <tr>
+        <td class="nome">Unlighthouse</td>
+        <td class="n">open source (MIT)</td>
+        <td class="n">US$ 0 + o vosso compute</td>
+        <td>Lighthouse em todas as páginas, com descoberta por sitemap e links, amostragem de rotas dinâmicas e painel próprio</td>
+        <td class="vd talvez">ótimo até ~100 páginas</td>
+      </tr>
+      <tr>
+        <td class="nome">JetOctopus</td>
+        <td class="n">a partir de US$ 237–383/mês<br>500 mil páginas + 2 mi de linhas de log</td>
+        <td class="n">~US$ 0,0005 / página</td>
+        <td>rastreio em escala + <strong>análise de log</strong> (o que o Googlebot realmente visitou)</td>
+        <td class="vd talvez">se subir para enterprise</td>
+      </tr>
+      <tr>
+        <td class="nome">Ahrefs Site Audit</td>
+        <td class="n">dentro do plano<br>Lite US$ 129/mês = 100k créditos</td>
+        <td class="n">incluído</td>
+        <td>rastreio + o grafo de backlinks na mesma casa</td>
+        <td class="vd talvez">verificar licença p/ revenda</td>
+      </tr>
+      <tr>
+        <td class="nome">Screaming Frog</td>
+        <td class="n">US$ 279/ano por assento<br>(grátis até 500 URLs)</td>
+        <td class="n">ilimitado no assento</td>
+        <td>o padrão do mercado para auditoria manual; tem CLI e agendamento</td>
+        <td class="vd nao">ferramenta de desktop</td>
+      </tr>
+      <tr>
+        <td class="nome">Sitebulb</td>
+        <td class="n">desktop US$ 18–42/mês<br>Cloud US$ 125–495/mês</td>
+        <td class="n">incluído no plano</td>
+        <td>melhores explicações didáticas do mercado; Cloud roda sem máquina local</td>
+        <td class="vd nao">sem API pública</td>
+      </tr>
+      <tr>
+        <td class="nome">Lumar (ex-DeepCrawl)</td>
+        <td class="n">sob consulta · ~US$ 2.667/mês estimados</td>
+        <td class="n">—</td>
+        <td>rastreio de milhões de URLs, governança, integrações corporativas</td>
+        <td class="vd nao">outra faixa de mercado</td>
+      </tr>
+      <tr>
+        <td class="nome">Botify</td>
+        <td class="n">sob consulta · a partir de ~US$ 5.000/mês</td>
+        <td class="n">—</td>
+        <td>rastreio + logs + ativação, para e-commerce de grande porte</td>
+        <td class="vd nao">outra faixa de mercado</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota bom">
+    <span class="rotulo">a diferença que decide</span>
+    <p><strong>Screaming Frog e Sitebulb são licenças por assento, para uma pessoa auditar.</strong> Não existe história de multi-inquilino: cada cliente do Noortio não vai comprar um assento, e revender a saída de uma licença de desktop dentro de um SaaS é pergunta jurídica, não técnica — <em>confirmar nos termos antes de qualquer plano que dependa disso</em>.</p>
+    <p><strong>DataForSEO é a única API pura, pré-paga e sem assinatura da lista.</strong> Seis centavos por varredura de 500 páginas cabe até no plano gratuito; e como é pago por uso, uma varredura que ninguém pede não custa nada — ao contrário de qualquer mensalidade.</p>
+  </div>
+
+  <div class="nota">
+    <span class="rotulo">o desenho que eu proporia</span>
+    <p><strong>Varredura barata + julgamento caro em poucas páginas.</strong> O rastreio técnico passa em todas as páginas por centavos e devolve o mapa do site com os defeitos objetivos. Dele saem as <strong>3 a 5 páginas que mais importam</strong> — a home, a de preços, a de maior profundidade de clique, a que tem mais links internos. Só essas recebem a auditoria completa que vocês já têm.</p>
+    <p>Isso resolve o problema de custo <em>e</em> o de leitura: um relatório de 500 páginas não se lê, mas "seu site tem 47 páginas sem description, e destas cinco é a de preços — que auditei a fundo" é uma frase que vende.</p>
+  </div>
+</section>
+
+<section>
   <h2>O cenário completo, a 1.000 auditorias por mês</h2>
 
   <div class="tabela-env"><table>
@@ -395,6 +493,8 @@
     <li><a href="https://wave.webaim.org/api/">WAVE API — créditos e licenças</a> · <a href="https://attentioninsight.com/billing-plans/">Attention Insight — planos e créditos</a></li>
     <li><a href="https://dataforseo.com/pricing">DataForSEO — modelo pré-pago</a> · <a href="https://thatmarketingbuddy.com/pricing/ahrefs">Ahrefs — planos e unidades de API</a></li>
     <li><a href="https://busyless.space/seo-apis/pagespeed-insights">PageSpeed Insights API — cota gratuita</a> · <a href="https://affinco.com/firecrawl-pricing/">Firecrawl — créditos por página</a></li>
+    <li><a href="https://dataforseo.com/pricing/on-page/onpage-api">DataForSEO On-Page — preço por página</a> · <a href="https://sitebulb.com/subscriptions/pricing/index/">Sitebulb — planos</a> · <a href="https://comparedge.com/tools/screaming-frog/pricing">Screaming Frog — licença anual</a></li>
+    <li><a href="https://unlighthouse.dev/">Unlighthouse — open source</a> · <a href="https://www.capterra.com/p/197386/JetOctopus/">JetOctopus — planos</a> · <a href="https://contentmation.com/marketing-tools/lumar">Lumar — estimativa</a> · <a href="https://help.ahrefs.com/en/articles/3119402-how-are-crawl-credits-in-site-audit-spent">Ahrefs — créditos de rastreio</a></li>
   </ul>
 </div>
 
