@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Preços e custo-benefício dos motores externos de SEO, performance, acessibilidade, atenção visual e captura, cruzados com a economia real do Noortio.">
+<meta property="og:title" content="Motores externos: preço e retorno">
+<meta property="og:description" content="Quanto custa cada motor por auditoria, e qual deles vale a pena no Noortio.">
+<meta property="og:type" content="article">
+<title>Motores externos: preço e retorno</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  :root{
+    --ground:#f6f5f1; --surface:#fffefb;
+    --ink:#17180f; --ink-2:#5c5955; --ink-3:#8a877f;
+    --rule:#dedbd2; --rule-forte:#c9c5b8;
+    --alto:#b8402f; --medio:#a2661a; --baixo:#7d6a2a; --frio:#3f4a52;
+    --link:#4a6300; --marca:#c5fd24;
+  }
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Schibsted Grotesk",system-ui,-apple-system,sans-serif;
+    font-size:16.5px;line-height:1.62;letter-spacing:-.006em;
+  }
+  .env{max-width:62rem;margin:0 auto;padding:0 1.5rem 6rem}
+  code,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  code{font-size:.9em;background:var(--surface);border:1px solid var(--rule);padding:.05em .3em;white-space:nowrap}
+  .rotulo{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--ink-2);text-transform:lowercase}
+
+  header{padding:5rem 0 2rem;display:flex;flex-direction:column;gap:1.3rem}
+  h1{font-size:clamp(2rem,4.6vw,3rem);line-height:1.06;letter-spacing:-.028em;font-weight:600;margin:0;text-wrap:balance;max-width:18ch}
+  .lede{font-size:1.13rem;line-height:1.55;color:var(--ink-2);max-width:64ch;margin:0}
+  .lede strong{color:var(--ink);font-weight:600}
+
+  .base{
+    border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);
+    padding:1.1rem 0;margin-top:.5rem;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(10rem,1fr));gap:1.1rem 2rem;
+  }
+  .base div{display:flex;flex-direction:column;gap:.2rem}
+  .base b{font-family:"IBM Plex Mono",monospace;font-size:1.3rem;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1.1}
+
+  section{padding-top:3.25rem}
+  h2{font-size:1.32rem;font-weight:600;margin:0 0 .3rem;letter-spacing:-.02em;line-height:1.2}
+  .resumo{color:var(--ink-2);margin:0 0 1.5rem;max-width:66ch}
+  p{max-width:68ch}
+
+  .tabela-env{overflow-x:auto;border-top:1px solid var(--ink);border-bottom:1px solid var(--rule-forte);margin:0 0 1rem}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:46rem}
+  th,td{text-align:left;padding:.65rem 1.1rem .65rem 0;border-bottom:1px solid var(--rule);vertical-align:top}
+  tr:last-child td{border-bottom:0}
+  th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);font-weight:400;text-transform:lowercase;white-space:nowrap}
+  td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.nome{font-weight:600;white-space:nowrap}
+  .vd{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.06em;white-space:nowrap}
+  .sim{color:var(--baixo)} .talvez{color:var(--medio)} .nao{color:var(--alto)} .neutro{color:var(--ink-3)}
+  .legenda-tab{font-size:.85rem;color:var(--ink-3);margin:0 0 1.5rem}
+
+  .nota{background:var(--surface);border-left:2px solid var(--rule-forte);padding:.85rem 1rem;margin:1.25rem 0;max-width:70rem}
+  .nota.risco{border-left-color:var(--alto)}
+  .nota.bom{border-left-color:var(--baixo)}
+  .nota .rotulo{display:block;margin-bottom:.3rem}
+  .nota p{margin:0;max-width:70ch}
+  .nota p + p{margin-top:.6rem}
+
+  ol.passos{margin:0;padding-left:1.3rem;max-width:68ch}
+  ol.passos li{margin-bottom:.9rem}
+  ol.passos li::marker{font-family:"IBM Plex Mono",monospace;font-size:.85rem;color:var(--ink-3)}
+
+  .fecho{margin-top:4rem;border-top:2px solid var(--ink);padding-top:2rem;display:flex;flex-direction:column;gap:1rem}
+  .fecho p{margin:0}
+  a{color:var(--link);text-decoration-thickness:1px;text-underline-offset:3px}
+  a:hover{background:var(--marca);color:var(--ink);text-decoration:none}
+  a:focus-visible{outline:2px solid var(--link);outline-offset:2px;border-radius:2px}
+  .fontes{margin-top:2rem;font-size:.85rem;color:var(--ink-2)}
+  .fontes ul{margin:.5rem 0 0;padding-left:1.1rem}
+  .fontes li{margin-bottom:.25rem}
+  .irmao{margin-top:2.5rem;padding:1.15rem 0;border-top:1px solid var(--rule-forte);border-bottom:1px solid var(--rule-forte);display:flex;flex-direction:column;gap:.45rem}
+  .irmao p{margin:0}
+  @media (max-width:640px){ body{font-size:16px} }
+</style>
+</head>
+<body>
+<div class="env">
+
+<header>
+  <span class="rotulo">noortio · avaliação de motores externos · agosto de 2026</span>
+  <h1>Motores externos: preço e retorno</h1>
+  <p class="lede">Quanto custa cada motor que poderia entrar no Noortio, medido contra o que o produto gasta hoje. A régua não é "é bom?" — é <strong>quanto custa por auditoria</strong> e <strong>o que ele entrega que vocês não conseguem produzir</strong>.</p>
+
+  <div class="base">
+    <div><span class="rotulo">custo hoje por auditoria</span><b>US$ 0,008</b></div>
+    <div><span class="rotulo">captura medida</span><b>2–6 s</b></div>
+    <div><span class="rotulo">cota anônima</span><b>3 / dia</b></div>
+    <div><span class="rotulo">plano free</span><b>5 novas / mês</b></div>
+    <div><span class="rotulo">cenário desta análise</span><b>1.000 / mês</b></div>
+  </div>
+</header>
+
+<div class="nota">
+  <span class="rotulo">como ler estes números</span>
+  <p>Os preços foram pesquisados em <strong>agosto de 2026</strong> e mudam com frequência — confira antes de assinar qualquer coisa. O <em>custo por auditoria</em> assume o cenário de <strong>1.000 auditorias por mês</strong>: abaixo disso, os planos com mensalidade fixa ficam proporcionalmente mais caros; acima, mais baratos. A base de comparação é o custo atual do julgamento, <strong>US$ 0,008 por auditoria resgatada</strong>, declarado no <code>.env.example</code> do próprio repositório.</p>
+</div>
+
+<section>
+  <h2>Performance e Core Web Vitals</h2>
+  <p class="resumo">É onde a medição atual é mais fraca: uma carga única, sem throttling, medida da rede do servidor. Também é onde existe a melhor opção gratuita do mercado.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">PageSpeed Insights API</td>
+        <td class="n">grátis · 25.000/dia</td>
+        <td class="n">US$ 0,00</td>
+        <td>laboratório com throttling padronizado + <strong>dados de campo do CrUX</strong> (usuários reais). Roda na infra do Google — zero Chromium do vosso lado</td>
+        <td class="vd sim">adotar</td>
+      </tr>
+      <tr>
+        <td class="nome">CrUX API / BigQuery</td>
+        <td class="n">grátis</td>
+        <td class="n">US$ 0,00</td>
+        <td>campo bruto por origem e por URL; permite comparar o cliente com a mediana da categoria</td>
+        <td class="vd sim">adotar</td>
+      </tr>
+      <tr>
+        <td class="nome">WebPageTest (Catchpoint)</td>
+        <td class="n">grátis 300/mês<br>Pro ~US$ 15–18,75/mês (1.000 testes)</td>
+        <td class="n">~US$ 0,019</td>
+        <td>dispositivos e redes reais, múltiplas localidades, filmstrip e waterfall. É o padrão-ouro de evidência</td>
+        <td class="vd talvez">só no plano pago</td>
+      </tr>
+      <tr>
+        <td class="nome">DebugBear</td>
+        <td class="n">a partir de US$ 49–79/mês</td>
+        <td class="n">≥ US$ 0,05</td>
+        <td>Lighthouse + CWV monitorados, com histórico e alertas</td>
+        <td class="vd nao">encaixe errado</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <p class="legenda-tab">O DebugBear é excelente no que faz — monitoramento contínuo de sites que você controla. O Noortio audita URL de terceiro, sob demanda, uma vez. É produto para outra pergunta.</p>
+
+  <div class="nota bom">
+    <span class="rotulo">o melhor negócio da lista</span>
+    <p>O PSI dá throttling padronizado e dado de usuário real por <strong>zero</strong>, e a cota de 25.000/dia é ordens de grandeza acima do volume atual. O único preço é latência de 10–30 s — que sai do caminho crítico se a chamada for disparada <strong>em paralelo</strong> com a captura própria.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Acessibilidade</h2>
+  <p class="resumo">Hoje o contraste é medido por código próprio. Existe um motor open source que é o padrão do setor — e que roda dentro da página que vocês já têm aberta.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">axe-core (Deque)</td>
+        <td class="n">open source (MPL-2.0)</td>
+        <td class="n">US$ 0,00</td>
+        <td>~90 regras WCAG com ID de regra e critério citável. Injetável junto do <code>measureInPage</code>: sem navegação extra, milissegundos</td>
+        <td class="vd sim">adotar</td>
+      </tr>
+      <tr>
+        <td class="nome">WAVE API (WebAIM)</td>
+        <td class="n">US$ 0,025–0,04 por crédito<br>(1 crédito = 1 página)<br>licença fixa: US$ 4.000/ano por 100k</td>
+        <td class="n">~US$ 0,03</td>
+        <td>relatório com nome reconhecido no mundo de acessibilidade</td>
+        <td class="vd nao">não compensa</td>
+      </tr>
+      <tr>
+        <td class="nome">IBM Equal Access</td>
+        <td class="n">open source</td>
+        <td class="n">US$ 0,00</td>
+        <td>segunda opinião sobre as mesmas regras</td>
+        <td class="vd neutro">redundante</td>
+      </tr>
+    </tbody>
+  </table></div>
+  <p class="legenda-tab">O WAVE custa <strong>quase quatro vezes uma auditoria inteira</strong> para entregar o que o axe-core entrega de graça. A diferença é o nome na marca — e o axe-core é justamente o motor que roda por baixo da categoria de acessibilidade do Lighthouse.</p>
+
+  <div class="nota bom">
+    <span class="rotulo">o de melhor relação custo-benefício</span>
+    <p>O axe-core transforma "3 falhas de contraste" em "3 falhas, regra <code>color-contrast</code>, critério WCAG 1.4.3". Num produto cuja tese de marca é <em>rastreabilidade a critério</em>, isso é exatamente a moeda — e o preço é zero.</p>
+  </div>
+</section>
+
+<section>
+  <h2>SEO</h2>
+  <p class="resumo">O motor de on-page é próprio e bom: 13 códigos com pesos declarados e um estado "não sei" honesto. O que falta é fora-de-página — e aí os preços saltam.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">Google Search Console API</td>
+        <td class="n">grátis</td>
+        <td class="n">US$ 0,00</td>
+        <td>impressões, cliques, consultas e posição <strong>reais</strong> da página auditada</td>
+        <td class="vd sim">adotar no logado</td>
+      </tr>
+      <tr>
+        <td class="nome">DataForSEO</td>
+        <td class="n">pré-pago, depósito mínimo US$ 50<br><em>preço por requisição não confirmado</em></td>
+        <td class="n">verificar</td>
+        <td>SERP, on-page e backlinks por chamada, sem assinatura</td>
+        <td class="vd talvez">avaliar</td>
+      </tr>
+      <tr>
+        <td class="nome">Ahrefs API v3</td>
+        <td class="n">a partir do Lite US$ 129/mês<br>(10k unidades; excedente US$ 0,35–1,00 / 1.000 linhas)</td>
+        <td class="n">≥ US$ 0,13</td>
+        <td>backlinks, autoridade, tráfego estimado — dado que nenhum crawler próprio obtém</td>
+        <td class="vd talvez">só no plano alto</td>
+      </tr>
+      <tr>
+        <td class="nome">Semrush / Moz API</td>
+        <td class="n">assinatura + unidades</td>
+        <td class="n">comparável</td>
+        <td>métricas proprietárias de autoridade</td>
+        <td class="vd neutro">alternativas ao acima</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <span class="rotulo">o item mais subestimado desta página</span>
+    <p>O <strong>Search Console é grátis e devolve o dado mais valioso que existe</strong>: o desempenho real da página no buscador. A barreira não é preço, é autorização — só funciona para cliente que verifica a propriedade do site. Ou seja: é uma funcionalidade que <em>exige</em> conta e, por isso, empurra cadastro. O custo de aquisição vira benefício de produto.</p>
+  </div>
+</section>
+
+<section>
+  <h2>UI/UX e atenção visual</h2>
+  <p class="resumo">É a categoria que mais diferencia — e a única em que o preço por auditoria supera o custo do produto inteiro.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">Attention Insight</td>
+        <td class="n">Solo US$ 23/mês (20 créditos)<br>Team US$ 479/mês (500 créditos)<br>1 crédito = 1 URL/imagem</td>
+        <td class="n">~US$ 0,96–1,15</td>
+        <td>mapa de calor preditivo de atenção — transforma o <strong>teste dos 5 segundos</strong> de julgamento em medição</td>
+        <td class="vd talvez">só no relatório premium</td>
+      </tr>
+      <tr>
+        <td class="nome">Neurons / Expoze.io</td>
+        <td class="n">faixa comparável</td>
+        <td class="n">~US$ 1</td>
+        <td>mesma categoria; vale comparar acurácia declarada</td>
+        <td class="vd talvez">alternativas</td>
+      </tr>
+      <tr>
+        <td class="nome">APCA (<code>apca-w3</code>)</td>
+        <td class="n">open source</td>
+        <td class="n">US$ 0,00</td>
+        <td>o algoritmo de contraste candidato ao WCAG 3, ao lado do ratio 2.x</td>
+        <td class="vd sim">adotar</td>
+      </tr>
+      <tr>
+        <td class="nome">Applitools / Percy</td>
+        <td class="n">assinatura</td>
+        <td class="n">—</td>
+        <td>regressão visual entre versões</td>
+        <td class="vd nao">outro problema</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota risco">
+    <span class="rotulo">a conta que decide</span>
+    <p>Um mapa de atenção custa cerca de <strong>US$ 1,00 por auditoria</strong>. O julgamento inteiro custa <strong>US$ 0,008</strong>. É <strong>125 vezes</strong> o custo atual do produto — impossível na auditoria anônima e gratuita, que hoje permite 3 por dia por IP.</p>
+    <p>Mas é perfeitamente viável num relatório pago: US$ 1 de custo num produto de dezenas de dólares é margem normal. E é o único motor da lista que <strong>cria um eixo medido onde hoje só há julgamento</strong> — ou seja, o único que compra diferenciação em vez de paridade.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Captura — o que resolve o custo de verdade</h2>
+  <p class="resumo">A queixa original era o peso do Chromium. Medido, ele leva 2–6 s. O que pesa é subi-lo frio a cada invocação numa função serverless.</p>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>motor</th><th>preço</th><th>por auditoria</th><th>o que acrescenta</th><th>veredito</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">Browserbase</td>
+        <td class="n">Developer US$ 20/mês<br>100 h incluídas, depois US$ 0,12/h</td>
+        <td class="n">~US$ 0,0002</td>
+        <td>pool de browsers quentes com endpoint CDP, stealth e captcha. 100 h ≈ <strong>72.000 capturas</strong> de 5 s</td>
+        <td class="vd sim">adotar</td>
+      </tr>
+      <tr>
+        <td class="nome">Browserless</td>
+        <td class="n">grátis 1.000 unidades/mês<br>Prototyping ~US$ 25/mês</td>
+        <td class="n">1 unidade (≤30 s)</td>
+        <td>mesma ideia; unidade é bloco de 30 s de browser</td>
+        <td class="vd sim">alternativa</td>
+      </tr>
+      <tr>
+        <td class="nome">Firecrawl <em>(já no stack)</em></td>
+        <td class="n">grátis 1.000 créditos<br>Standard US$ 83/mês (100k)</td>
+        <td class="n">US$ 0,0008<br>US$ 0,004 em modo stealth</td>
+        <td>plano B para site que barra o navegador próprio. Já integrado</td>
+        <td class="vd sim">manter</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota bom">
+    <span class="rotulo">a economia escondida</span>
+    <p>US$ 20/mês cobrem 72.000 capturas — <strong>US$ 0,0002 cada</strong>, quarenta vezes menos que o julgamento. E o ganho não é só preço: sai o cold start, sai o limite de 2 GB da função, e a captura passa a levar os 2–6 s medidos em vez do tempo de ligar um Chromium do zero. É o item com melhor retorno por real gasto de toda esta página.</p>
+  </div>
+</section>
+
+<section>
+  <h2>O cenário completo, a 1.000 auditorias por mês</h2>
+
+  <div class="tabela-env"><table>
+    <thead><tr><th>combinação</th><th>custo mensal</th><th>por auditoria</th><th>o que o cliente ganha</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="nome">hoje</td>
+        <td class="n">~US$ 8 + Vercel</td>
+        <td class="n">US$ 0,008</td>
+        <td>a auditoria como ela é</td>
+      </tr>
+      <tr>
+        <td class="nome">camada grátis<br><span class="rotulo">PSI + CrUX + axe-core + APCA</span></td>
+        <td class="n">~US$ 8</td>
+        <td class="n">US$ 0,008</td>
+        <td>performance com throttling e dado de campo real, acessibilidade citando critério WCAG. <strong>Sem custo adicional</strong></td>
+      </tr>
+      <tr>
+        <td class="nome">+ browser quente<br><span class="rotulo">Browserbase</span></td>
+        <td class="n">~US$ 28</td>
+        <td class="n">US$ 0,028</td>
+        <td>mesma auditoria, mais rápida e sem o teto de 2 GB — e provavelmente devolve parte disso em conta de Vercel</td>
+      </tr>
+      <tr>
+        <td class="nome">+ premium de performance<br><span class="rotulo">WebPageTest Pro</span></td>
+        <td class="n">~US$ 47</td>
+        <td class="n">US$ 0,047</td>
+        <td>dispositivo e rede reais, filmstrip — evidência de nível agência</td>
+      </tr>
+      <tr>
+        <td class="nome">+ atenção visual<br><span class="rotulo">Attention Insight</span></td>
+        <td class="n">~US$ 1.000</td>
+        <td class="n">US$ 1,00</td>
+        <td>o teste dos 5 segundos vira medição. <strong>Inviável no grátis, natural no pago</strong></td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota">
+    <span class="rotulo">o desenho que os preços sugerem</span>
+    <p>Os motores se organizam sozinhos nos planos que já existem em <code>lib/plans.ts</code>. Não é coincidência: é o custo marginal ditando a embalagem.</p>
+    <p><strong>Anônimo e free</strong> — só motores de custo zero: PSI, CrUX, axe-core, APCA. A auditoria continua custando US$ 0,008 e fica visivelmente melhor.<br>
+    <strong>Pro</strong> — acrescenta WebPageTest e Search Console (que já exige conta, e por isso puxa cadastro).<br>
+    <strong>Studio</strong> — acrescenta atenção visual e dados de fora-de-página. São os US$ 1/auditoria que só um relatório pago sustenta.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Ordem de execução</h2>
+  <ol class="passos">
+    <li><strong>axe-core</strong> — meia tarde de trabalho, zero de custo, zero de latência. Passa a citar critério WCAG em cada achado de acessibilidade. É o maior ganho de credibilidade por hora investida.</li>
+    <li><strong>PSI + CrUX em paralelo com a captura</strong> — grátis, e substitui a métrica mais frágil do relatório por uma com throttling padronizado e dado de usuário real.</li>
+    <li><strong>Browser quente</strong> (Browserbase ou equivalente) — US$ 20/mês que resolvem a queixa de peso do Chromium sem trocar de ferramenta, e devolvem parte do valor em conta de função serverless.</li>
+    <li><strong>APCA ao lado do WCAG 2</strong> — biblioteca open source, diferencia o relatório de qualquer checador comum.</li>
+    <li><strong>Piloto de atenção visual</strong> — 20 créditos por US$ 23 dão para medir se o mapa de calor muda o veredito em casos reais. Decidir com dado, não com folheto.</li>
+    <li><strong>Search Console</strong> quando houver fluxo de cliente verificando propriedade — é o dado mais valioso da lista e custa zero.</li>
+  </ol>
+
+  <div class="nota risco">
+    <span class="rotulo">a regra que eu aplicaria a qualquer adoção</span>
+    <p>Um motor externo só entra se produzir algo que vocês <strong>não conseguem produzir</strong>. Cada um acrescenta latência, uma fatura e um modo de falha novo — e se ele devolve um número que o cliente obtém sozinho e de graça, ele <em>comoditiza</em> o relatório em vez de fortalecê-lo. É o mesmo raciocínio que o repositório já aplica em <code>lib/engine.ts</code> ao esconder o slug do modelo: a parte proprietária precisa ler como própria.</p>
+    <p>Por isso as medições de dobra, tipografia, tokens visuais e CTAs <strong>não</strong> devem ser terceirizadas. Nenhum motor desta página as produz — e são elas que sustentam os eixos de Craft e Conversão.</p>
+  </div>
+</section>
+
+<div class="fecho">
+  <span class="rotulo">o resumo em uma linha</span>
+  <p>Quatro motores gratuitos melhoram o relatório sem mexer no custo. Um de US$ 20/mês resolve o problema de peso do Chromium. E um de US$ 1 por auditoria compra diferenciação real — mas só faz sentido depois que existir alguém pagando.</p>
+</div>
+
+<div class="fontes">
+  <span class="rotulo">fontes dos preços · consultadas em agosto de 2026</span>
+  <ul>
+    <li><a href="https://www.browserless.io/pricing">Browserless — pricing</a> · <a href="https://scrapegraphai.com/blog/browserbase-pricing">Browserbase — planos e custo por hora</a></li>
+    <li><a href="https://www.catchpoint.com/pricing">Catchpoint WebPageTest — pricing</a> · <a href="https://www.softwaresuggest.com/debugbear/pricing">DebugBear — pricing</a></li>
+    <li><a href="https://wave.webaim.org/api/">WAVE API — créditos e licenças</a> · <a href="https://attentioninsight.com/billing-plans/">Attention Insight — planos e créditos</a></li>
+    <li><a href="https://dataforseo.com/pricing">DataForSEO — modelo pré-pago</a> · <a href="https://thatmarketingbuddy.com/pricing/ahrefs">Ahrefs — planos e unidades de API</a></li>
+    <li><a href="https://busyless.space/seo-apis/pagespeed-insights">PageSpeed Insights API — cota gratuita</a> · <a href="https://affinco.com/firecrawl-pricing/">Firecrawl — créditos por página</a></li>
+  </ul>
+</div>
+
+<div class="irmao">
+  <span class="rotulo">as outras páginas</span>
+  <p><a href="mapa.html">Mapa em diagramas</a> — o sistema desenhado, com os defeitos no lugar onde moram.</p>
+  <p><a href="arquitetura.html">Arquitetura em texto</a> — as onze peças, ponto a ponto.</p>
+  <p><a href="tecnico.html">Relatório técnico</a> — os 12 defeitos com evidência e arquivo:linha.</p>
+  <p><a href="index.html">Relatório em linguagem simples</a> — os mesmos defeitos, sem termos técnicos.</p>
+</div>
+
+</div>
+</body>
+</html>
