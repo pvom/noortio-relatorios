@@ -257,7 +257,7 @@ em.q{font-style:italic;color:var(--ink)}
 
   <header class="top">
     <div class="ident">
-      <p class="eyebrow">Boletim de obra · sessão de 4–5 de setembro de 2026</p>
+      <p class="eyebrow">Boletim de obra · sessão de 4–5 de setembro de 2026 · encerrada</p>
       <h1>O que está sendo feito no Noortio</h1>
       <p class="dek">O Noortio é um site que analisa páginas de venda e diz por que elas não convertem. Ele estava parado. Esta sessão o religa, troca peças internas e conserta cinco defeitos — este boletim explica cada mudança sem jargão.</p>
     </div>
@@ -272,19 +272,27 @@ em.q{font-style:italic;color:var(--ink)}
   <div class="gauge">
     <div class="gauge-head">
       <span>Progresso das 8 tarefas planejadas</span>
-      <strong>5 concluídas · 1 em revisão · 2 pendentes</strong>
+      <strong>8 concluídas · trabalho de código encerrado</strong>
     </div>
-    <div class="bar" role="img" aria-label="5 tarefas concluídas, 1 em andamento, 2 pendentes de um total de 8">
+    <div class="bar" role="img" aria-label="as 8 tarefas concluídas">
+      <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
       <div class="seg done"></div><div class="seg done"></div><div class="seg done"></div>
       <div class="seg done"></div><div class="seg done"></div>
-      <div class="seg now"></div>
-      <div class="seg"></div><div class="seg"></div>
     </div>
     <div class="legend">
-      <span><i class="d"></i>concluída e revisada</span>
-      <span><i class="n"></i>em revisão agora</span>
-      <span><i class="p"></i>ainda não começou</span>
+      <span><i class="d"></i>concluída, revisada e testada</span>
+      <span style="margin-left:auto">aguardando só a decisão de publicar</span>
     </div>
+  </div>
+
+  <div class="note" style="margin-top:26px">
+    <span class="cap">Encerrado em 5 de setembro</span>
+    <p><strong>As oito tarefas estão prontas, revisadas e testadas.</strong> A suíte
+    automática saiu de 85 para <strong>148 testes</strong>, todos passando, com
+    resultado idêntico em execuções repetidas — antes ela oscilava. Nada foi
+    publicado: as 57 alterações estão guardadas no computador, e a versão oficial
+    do produto não foi tocada. Falta uma única coisa, e ela não é técnica:
+    <strong>a decisão de enviar isso para o dono do produto</strong>.</p>
   </div>
 
   <!-- ============ CONTEXTO ============ -->
@@ -458,16 +466,81 @@ em.q{font-style:italic;color:var(--ink)}
     </div>
   </section>
 
+  <!-- ============ A MEDIÇÃO QUE CONTRARIOU A DECISÃO ============ -->
+  <section>
+    <h2>A medição que contrariou a própria decisão</h2>
+    <p class="sub">A tarefa final gastou US$ 0,35 em análises reais para responder uma pergunta que o plano deixou em aberto: dividir o julgamento em quatro conversas com a IA valeu a pena? A resposta foi <em>não</em>, nos termos em que a decisão tinha sido defendida.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th style="width:34%">o que foi medido</th><th style="width:22%">jeito antigo<br>(1 conversa)</th><th style="width:22%">jeito novo<br>(4 conversas)</th><th style="width:22%">o que se prometeu</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><p><strong>custo por análise</strong></p></td>
+            <td><p>US$ 0,0204</p></td>
+            <td><p>US$ 0,0478</p></td>
+            <td><p>previsto: +55%<br><strong>real: +134%</strong></p></td>
+          </tr>
+          <tr>
+            <td><p><strong>tempo de espera</strong></p></td>
+            <td><p>14,1 s</p></td>
+            <td><p>15,6 s</p></td>
+            <td><p>prometia ser <strong>mais rápido</strong>; ficou mais lento</p></td>
+          </tr>
+          <tr>
+            <td><p><strong>qualidade</strong></p></td>
+            <td><p>aprovado 3/3</p></td>
+            <td><p>aprovado 3/3</p></td>
+            <td><p>empate</p></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note warn">
+      <span class="cap">Por que a mudança fica, mesmo perdendo na medição</span>
+      <p>A revisão final mostrou que a lentidão <strong>não é acaso da amostra</strong>: as três conversas paralelas terminam junto com a mais lenta delas, e a quarta (que junta tudo) vem depois, em fila. É aritmética da arquitetura, não sorte.</p>
+      <p>Mas ela também mostrou que o ganho real nunca foi velocidade — é que a divisão fecha <strong>três tipos de erro por construção</strong>, e não por pedido: uma nota faltando vira erro imediato em vez de passar batido; as evidências de cada problema são devolvidas por quem as mediu, e não reescritas pela IA; e a regra que limita a nota de Conversão passou a olhar todos os problemas encontrados, não só os que a IA escolheu mostrar. Numa conversa só, essas três coisas você só consegue <em>pedindo</em> à IA — e pedir não é garantir.</p>
+      <p><strong>A bancada também estava viciada nos dois sentidos</strong>, e isso está registrado: ela rodava o jeito antigo sempre primeiro, o que barateava artificialmente o novo; e o jeito antigo não recebia o texto da página nem os dados externos, então parte do custo a mais compra evidência a mais. Com três páginas, esses dois vieses não se separam.</p>
+    </div>
+  </section>
+
+  <!-- ============ OS ORFAOS ============ -->
+  <section>
+    <h2>O erro que apareceu três vezes</h2>
+    <p class="sub">Vale contar porque é o achado mais útil da sessão, e o terceiro caso foi descuido meu.</p>
+
+    <div class="tablewrap">
+      <table>
+        <thead>
+          <tr><th style="width:26%">peça</th><th style="width:44%">o que acontecia</th><th style="width:30%">quando foi pego</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="name">SEO externo</td><td><p>278 linhas escritas, 7 testes passando, <strong>nenhuma parte do programa chamava</strong></p></td><td><p>já era conhecido — era o motivo da tarefa</p></td></tr>
+          <tr><td class="name">Velocidade<br>(PSI/CrUX)</td><td><p>buscava o dado, guardava na memória, <strong>nunca mandava para a IA</strong></p></td><td><p>revisão da própria tarefa</p></td></tr>
+          <tr><td class="name">Acessibilidade<br>(axe + APCA)</td><td><p>rodava nas duas telas (computador e celular) e o resultado <strong>não ia a lugar nenhum</strong></p></td><td><p>só na revisão do conjunto</p></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note warn">
+      <p>O terceiro caso é o que ensina alguma coisa: <strong>eu encontrei esse mesmo defeito no segundo caso, mandei corrigir, e parei a busca ali</strong> — sem voltar para conferir o que já estava pronto. O produto gastava de 1 a 5 segundos por tela para produzir dados que ninguém lia, <em>e ainda assim carimbava aquele item do relatório como “medido — número real, não é chute”</em>.</p>
+      <p>O que torna esse erro difícil de ver: <strong>os testes passavam</strong>. Eles verificavam que o valor era <em>medido</em>, nunca que era <em>usado</em>. Uma peça pode estar perfeitamente construída, perfeitamente testada, e completamente desligada.</p>
+    </div>
+  </section>
+
   <!-- ============ TEMPO ============ -->
   <section>
     <h2>Quanto tempo cada parte levou</h2>
     <p class="sub">Tempo real de execução. Cada tarefa passou por: implementação, revisão independente, correção dos apontamentos e nova revisão. Nenhuma passou de primeira.</p>
 
     <div class="figs">
-      <div class="fig"><div class="n">≈1h40</div><div class="l">de trabalho já concluído</div></div>
-      <div class="fig"><div class="n">17</div><div class="l">correções exigidas pelas revisões</div></div>
-      <div class="fig"><div class="n">9</div><div class="l">erros meus achados antes de virar código</div></div>
-      <div class="fig"><div class="n">0</div><div class="l">linhas publicadas até agora</div></div>
+      <div class="fig"><div class="n">57</div><div class="l">alterações salvas, nenhuma publicada</div></div>
+      <div class="fig"><div class="n">148</div><div class="l">testes automáticos passando (eram 85)</div></div>
+      <div class="fig"><div class="n">10</div><div class="l">erros meus achados antes de virar código</div></div>
+      <div class="fig"><div class="n">US$&nbsp;0,35</div><div class="l">gasto real, todo na tarefa de medição</div></div>
     </div>
 
     <div class="tl" style="margin-top:34px">
@@ -487,9 +560,25 @@ em.q{font-style:italic;color:var(--ink)}
         <div class="tl-head"><span class="tl-n">04</span><span class="tl-t">Os quatro defeitos de comportamento</span><span class="tl-time">≈ 24 min</span></div>
         <p>Nota final, crédito, parte paga e contagem. Aqui eu tinha contrariado uma decisão do dono do produto sem perceber; foi revertido.</p>
       </div>
-      <div class="tl-item now">
-        <div class="tl-head"><span class="tl-n">05</span><span class="tl-t">Dividir o julgamento em quatro</span><span class="tl-time">≈ 40 min · em curso</span></div>
-        <p>A mudança mais delicada: é a única que altera <em>como o produto pensa</em>. Está na segunda rodada de correções. A revisão encontrou que uma das correções tinha reintroduzido o defeito da tela, por um caminho diferente.</p>
+      <div class="tl-item done">
+        <div class="tl-head"><span class="tl-n">05</span><span class="tl-t">Dividir o julgamento em quatro</span><span class="tl-time">≈ 55 min</span></div>
+        <p>A mudança mais delicada: a única que altera <em>como o produto pensa</em>. Precisou de três rodadas de correção e acumulou 16 apontamentos — e três deles eram <strong>defeitos criados pelas próprias correções anteriores</strong>, não pelo código original.</p>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-head"><span class="tl-n">06</span><span class="tl-t">Medidores de acessibilidade</span><span class="tl-time">≈ 30 min</span></div>
+        <p>axe-core e APCA. A revisão encontrou que o medidor não tinha <em>prazo</em>: o programa se protegia contra ele falhar, mas não contra ele demorar — e demorar é o que acontece de verdade em páginas grandes.</p>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-head"><span class="tl-n">07</span><span class="tl-t">Velocidade real e SEO externo</span><span class="tl-time">≈ 35 min</span></div>
+        <p>Entregou código morto na primeira tentativa — ver a seção sobre os três desligados, acima.</p>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-head"><span class="tl-n">08</span><span class="tl-t">Bancada de comparação</span><span class="tl-time">≈ 25 min · US$ 0,35</span></div>
+        <p>Análises reais pelos dois caminhos. Devolveu evidência <em>contra</em> a decisão de arquitetura tomada mais cedo, e isso foi registrado sem suavizar.</p>
+      </div>
+      <div class="tl-item done">
+        <div class="tl-head"><span class="tl-n">—</span><span class="tl-t">Revisão do conjunto e correção final</span><span class="tl-time">≈ 45 min</span></div>
+        <p>Leitura das 57 alterações de uma vez, procurando o que as revisões individuais não podiam ver: problemas que só existem na <strong>combinação</strong>. Encontrou 3 graves — entre eles a acessibilidade desligada.</p>
       </div>
     </div>
   </section>
@@ -497,48 +586,32 @@ em.q{font-style:italic;color:var(--ink)}
   <!-- ============ O QUE FALTA ============ -->
   <section>
     <h2>O que ainda falta</h2>
-    <p class="sub">Estimativa entre 70 e 105 minutos de execução, mais as decisões que não são minhas.</p>
+    <p class="sub">Nada de técnico. O que resta são decisões, e nenhuma delas é minha para tomar.</p>
 
     <div class="todo-row">
-      <span class="todo-n">05</span>
-      <div class="todo-body"><strong>Terminar a divisão do julgamento</strong><span>Fechar a segunda rodada de correções e revisar de novo.</span></div>
-      <span class="todo-time">15–25 min</span>
+      <span class="todo-n">1</span>
+      <div class="todo-body"><strong>Enviar para o dono do produto</strong><span>As 57 alterações estão no computador, numa ramificação separada. Publicar significa mandá-las para o repositório do Márcio, numa área de testes — nunca direto no que está no ar.</span></div>
+      <span class="todo-time">decisão sua</span>
     </div>
     <div class="todo-row">
-      <span class="todo-n">06</span>
-      <div class="todo-body"><strong>Instalar os medidores de acessibilidade</strong><span>axe-core e APCA dentro da captura da página. Parte delicada: o motor que mede é enviado ao navegador de uma forma que não aceita bibliotecas comuns.</span></div>
-      <span class="todo-time">15–25 min</span>
+      <span class="todo-n">2</span>
+      <div class="todo-body"><strong>O conflito com a decisão dele</strong><span>O Márcio registrou por escrito, num commit de 26 de agosto, a decisão de usar <em>só modelos gratuitos</em>. Este trabalho vai contra isso. O argumento é que o gratuito, medido, entrega zero análises — mas a escolha é dele, e é a primeira frase do pedido de revisão.</span></div>
+      <span class="todo-time">decisão dele</span>
     </div>
     <div class="todo-row">
-      <span class="todo-n">07</span>
-      <div class="todo-body"><strong>Ligar velocidade real e SEO externo</strong><span>Google PSI/CrUX e o módulo de SEO que estava órfão.</span></div>
-      <span class="todo-time">12–18 min</span>
-    </div>
-    <div class="todo-row">
-      <span class="todo-n">08</span>
-      <div class="todo-body"><strong>Bancada de comparação</strong><span>Rodar análises <em>reais</em> pelos dois caminhos — o novo dividido e o antigo unificado — e comparar qualidade e custo. É o único ponto que gasta dinheiro: cerca de <strong>US$&nbsp;0,35</strong>.</span></div>
-      <span class="todo-time">15–25 min</span>
-    </div>
-    <div class="todo-row">
-      <span class="todo-n">—</span>
-      <div class="todo-body"><strong>Revisão final de tudo junto</strong><span>Uma leitura do conjunto, procurando problemas que só aparecem na soma das partes.</span></div>
-      <span class="todo-time">15–20 min</span>
-    </div>
-    <div class="todo-row">
-      <span class="todo-n">—</span>
-      <div class="todo-body"><strong>Dois testes instáveis</strong><span>Dois testes automáticos dão resultados diferentes a cada execução. São defeitos antigos, não causados por este trabalho — mas precisam ser resolvidos antes de entregar, senão a primeira coisa que o dono vê é uma suíte que oscila.</span></div>
-      <span class="todo-time">10–20 min</span>
+      <span class="todo-n">3</span>
+      <div class="todo-body"><strong>Quatro decisões de produto tomadas sem ele</strong><span>Devolver o crédito em qualquer falha, mostrar só uma solução como amostra, calcular a nota final em vez de perguntá-la à IA, e limitar a rota de tradução. Cada uma vai no pedido de revisão com a receita de como desfazer.</span></div>
+      <span class="todo-time">decisão dele</span>
     </div>
 
-    <div class="note warn" style="margin-top:30px">
-      <span class="cap">A decisão final não é minha</span>
-      <p>Nada foi publicado. Tudo está guardado localmente, numa ramificação separada, e a linha principal do produto <strong>não foi tocada</strong>. O último passo é enviar para o repositório do Márcio e abrir um pedido de revisão numa área de testes — nunca direto no que está no ar.</p>
-      <p>E há um conflito honesto a declarar: <strong>o Márcio registrou explicitamente a decisão de usar só modelos gratuitos.</strong> Este trabalho vai contra isso, com o argumento de que o gratuito, medido, entrega zero análises. A escolha é dele, e é a primeira coisa que o pedido de revisão vai dizer.</p>
+    <div class="note" style="margin-top:30px">
+      <span class="cap">Pendências conhecidas, escritas e não escondidas</span>
+      <p>Quatro coisas ficaram por fazer de propósito, cada uma com o motivo registrado: o campo de “esforço” de cada problema ainda é decidido pela IA; a regra que decide pular uma tentativa de correção é conservadora demais e às vezes gasta mais do que precisaria; a busca por dados externos consome uma folga de tempo que hoje existe; e o limite da rota de tradução (60 por hora) é um chute inicial, não uma medição.</p>
     </div>
   </section>
 
   <div class="foot">
-    <span>Boletim gerado durante a sessão · 4–5 set 2026</span>
+    <span>Boletim final · sessão encerrada em 5 set 2026 · 57 alterações, nenhuma publicada</span>
     <span>Noortio · noortio.com</span>
   </div>
 
