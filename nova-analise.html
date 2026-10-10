@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noortio — nova análise</title>
+<style>
+:root{--bg:#f7f5ef;--card:#fff;--ink:#15171c;--ink2:#5b616d;--line:#e0dcd0;--caro:#d9480f;--bom:#178a45;--azul:#2458d6;--carobg:#fdeadf;--bombg:#e2f5e9;--azulbg:#e5edff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1115;--card:#181b21;--ink:#eef0f4;--ink2:#a5acb8;--line:#2c313a;--caro:#ff9457;--bom:#4ade80;--azul:#86a9ff;--carobg:#3b2012;--bombg:#12301e;--azulbg:#162444}}
+:root[data-theme="dark"]{--bg:#0f1115;--card:#181b21;--ink:#eef0f4;--ink2:#a5acb8;--line:#2c313a;--caro:#ff9457;--bom:#4ade80;--azul:#86a9ff;--carobg:#3b2012;--bombg:#12301e;--azulbg:#162444}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+main{max-width:980px;margin:0 auto;padding:24px 16px 70px}
+.topo{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.05;margin:6px 0 10px;letter-spacing:-.025em}
+h2{font-size:clamp(24px,4vw,34px);margin:64px 0 4px;letter-spacing:-.02em;line-height:1.15}
+.lead{font-size:clamp(18px,2.4vw,22px);color:var(--ink2);max-width:36ch;margin:0}
+.tag{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;font-size:14px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.g{display:grid;gap:14px}.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.big{font-size:clamp(40px,8vw,64px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.antes{color:var(--caro);font-size:.5em;font-weight:700;text-decoration:line-through;display:block;margin-bottom:6px}
+.depois{color:var(--bom)}
+.leg{color:var(--ink2);font-size:15.5px;margin:8px 0 0}
+svg{display:block;max-width:100%;height:auto}
+.ico{width:64px;height:64px;margin-bottom:8px}
+.cena{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:stretch;margin-top:14px}
+.quadro{border-radius:16px;padding:16px 12px;text-align:center;border:2px solid var(--line);background:var(--card)}
+.quadro b{display:block;font-size:17px;line-height:1.2}
+.quadro span{display:block;color:var(--ink2);font-size:14.5px;margin-top:4px}
+.quadro svg{margin:0 auto 8px}
+.q-caro{background:var(--carobg);border-color:var(--caro)}.q-bom{background:var(--bombg);border-color:var(--bom)}.q-azul{background:var(--azulbg);border-color:var(--azul)}
+.preco{display:inline-block;margin-top:8px;font-weight:800;font-size:15px;border-radius:999px;padding:3px 10px;background:var(--card)}
+.q-caro .preco{color:var(--caro)}.q-bom .preco{color:var(--bom)}.q-azul .preco{color:var(--azul)}
+.frase{font-size:clamp(19px,2.6vw,24px);font-weight:700;max-width:30ch;margin:14px 0 0}
+.barra{margin:12px 0}.barra .nome{font-weight:700;margin-bottom:5px;display:flex;justify-content:space-between;gap:10px}
+.trilho{height:38px;border-radius:10px;background:var(--bg);border:1px solid var(--line);overflow:hidden}
+.trilho i{display:block;height:100%;border-radius:9px;min-width:8px}
+.moedas{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+.moedas i{width:22px;height:22px;border-radius:50%;display:inline-block}
+.estrada{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px}
+.parada{border-radius:16px;padding:16px;border:2px solid var(--bom);background:var(--bombg);position:relative}
+.parada .n{width:38px;height:38px;border-radius:50%;background:var(--bom);color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.parada b{display:block;font-size:18px;line-height:1.2}.parada span{color:var(--ink2);font-size:15px;display:block;margin-top:4px}
+.parada.decide{border-style:dashed;border-color:var(--azul);background:var(--azulbg)}.parada.decide .n{background:var(--azul)}
+.rodape{margin-top:40px;color:var(--ink2);font-size:14px}
+</style>
+</head>
+<body>
+<main>
+
+<div class="topo">
+  <div>
+    <span class="tag">Noortio · outubro de 2026</span>
+    <h1>Analisar uma página vai custar cinco vezes menos</h1>
+    <p class="lead">Mesma análise para o cliente. Outra forma de fazer por dentro.</p>
+  </div>
+  <button id="tema" type="button">Claro / escuro</button>
+</div>
+
+<div class="g g3" style="margin-top:26px">
+  <div class="card"><span class="tag">Custo de cada análise</span><div class="big"><span class="antes">6 centavos</span><span class="depois">1 centavo</span></div><p class="leg">de dólar, aproximadamente</p></div>
+  <div class="card"><span class="tag">Conta do mês, no uso máximo</span><div class="big"><span class="antes">US$ 280</span><span class="depois">US$ 30–80</span></div><p class="leg">com 150 análises por dia</p></div>
+  <div class="card"><span class="tag">Tempo para decidir a nota</span><div class="big"><span class="antes">19 segundos</span><span class="depois">4 segundos</span></div><p class="leg">o resultado chega igual ou mais rápido</p></div>
+</div>
+
+<h2>Hoje: quatro especialistas leem tudo do zero</h2>
+<p class="lead">Cada análise chama a inteligência artificial quatro vezes. Em cada uma, ela relê o manual inteiro e escreve um texto novo.</p>
+<div class="cena">
+  <div class="quadro"><svg class="ico" viewBox="0 0 64 64"><rect x="8" y="10" width="48" height="40" rx="5" fill="none" stroke="currentColor" stroke-width="3"/><path d="M8 20h48" stroke="currentColor" stroke-width="3"/><rect x="15" y="27" width="22" height="5" rx="2" fill="currentColor"/><rect x="15" y="36" width="34" height="4" rx="2" fill="currentColor" opacity=".45"/></svg><b>A página do cliente</b></div>
+  <div class="quadro q-caro"><svg class="ico" viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="30" rx="7" fill="var(--caro)"/><circle cx="25" cy="33" r="4" fill="#fff"/><circle cx="39" cy="33" r="4" fill="#fff"/><rect x="25" y="41" width="14" height="3" rx="1.5" fill="#fff"/><path d="M32 20v-8" stroke="var(--caro)" stroke-width="3"/><circle cx="32" cy="10" r="3" fill="var(--caro)"/></svg><b>Especialista 1</b><span>parte técnica</span></div>
+  <div class="quadro q-caro"><svg class="ico" viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="30" rx="7" fill="var(--caro)"/><circle cx="25" cy="33" r="4" fill="#fff"/><circle cx="39" cy="33" r="4" fill="#fff"/><rect x="25" y="41" width="14" height="3" rx="1.5" fill="#fff"/><path d="M32 20v-8" stroke="var(--caro)" stroke-width="3"/><circle cx="32" cy="10" r="3" fill="var(--caro)"/></svg><b>Especialista 2</b><span>os textos</span></div>
+  <div class="quadro q-caro"><svg class="ico" viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="30" rx="7" fill="var(--caro)"/><circle cx="25" cy="33" r="4" fill="#fff"/><circle cx="39" cy="33" r="4" fill="#fff"/><rect x="25" y="41" width="14" height="3" rx="1.5" fill="#fff"/><path d="M32 20v-8" stroke="var(--caro)" stroke-width="3"/><circle cx="32" cy="10" r="3" fill="var(--caro)"/></svg><b>Especialista 3</b><span>o visual, pelas fotos</span></div>
+  <div class="quadro q-caro"><svg class="ico" viewBox="0 0 64 64"><rect x="14" y="20" width="36" height="30" rx="7" fill="var(--caro)"/><circle cx="25" cy="33" r="4" fill="#fff"/><circle cx="39" cy="33" r="4" fill="#fff"/><rect x="25" y="41" width="14" height="3" rx="1.5" fill="#fff"/><path d="M32 20v-8" stroke="var(--caro)" stroke-width="3"/><circle cx="32" cy="10" r="3" fill="var(--caro)"/></svg><b>Especialista 4</b><span>escreve o relatório</span></div>
+</div>
+<p class="frase">É como pagar quatro consultores para escreverem um parecer novo a cada visita.</p>
+
+<h2>Depois: um checklist faz o grosso do trabalho</h2>
+<p class="lead">O que dá para medir, mede-se. A inteligência artificial só responde a perguntas curtas.</p>
+<div class="cena">
+  <div class="quadro q-bom"><svg class="ico" viewBox="0 0 64 64"><rect x="6" y="24" width="52" height="16" rx="3" fill="var(--bom)"/><path d="M14 24v7M22 24v5M30 24v7M38 24v5M46 24v7" stroke="#fff" stroke-width="2.5"/></svg><b>Medir</b><span>tamanhos, cores, posição de cada parte, velocidade</span><span class="preco">quase de graça</span></div>
+  <div class="quadro q-bom"><svg class="ico" viewBox="0 0 64 64"><circle cx="27" cy="27" r="15" fill="none" stroke="var(--bom)" stroke-width="5"/><path d="M38 38l14 14" stroke="var(--bom)" stroke-width="6" stroke-linecap="round"/><path d="M20 27h14M20 22h9" stroke="var(--bom)" stroke-width="3" stroke-linecap="round"/></svg><b>Ler imagens</b><span>quando o texto está dentro de uma figura</span><span class="preco">quase de graça</span></div>
+  <div class="quadro q-bom"><svg class="ico" viewBox="0 0 64 64"><rect x="12" y="8" width="40" height="48" rx="5" fill="none" stroke="var(--bom)" stroke-width="3"/><path d="M19 22l4 4 7-8M19 36l4 4 7-8" fill="none" stroke="var(--bom)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M35 24h11M35 38h11" stroke="var(--bom)" stroke-width="3" stroke-linecap="round"/></svg><b>Regras automáticas</b><span>decidem 6 em cada 10 pontos sozinhas</span><span class="preco">de graça</span></div>
+  <div class="quadro q-azul"><svg class="ico" viewBox="0 0 64 64"><rect x="8" y="12" width="48" height="32" rx="8" fill="var(--azul)"/><path d="M22 44l-4 10 12-10" fill="var(--azul)"/><text x="32" y="36" text-anchor="middle" font-size="22" font-weight="800" fill="#fff" font-family="Arial">?</text></svg><b>Perguntas de sim ou não</b><span>«o título diz o que o produto é?»</span><span class="preco">menos de 1 centavo</span></div>
+  <div class="quadro q-bom"><svg class="ico" viewBox="0 0 64 64"><path d="M16 6h24l10 10v42H16z" fill="none" stroke="var(--bom)" stroke-width="3" stroke-linejoin="round"/><path d="M40 6v10h10" fill="none" stroke="var(--bom)" stroke-width="3"/><path d="M23 28h20M23 36h20M23 44h13" stroke="var(--bom)" stroke-width="3" stroke-linecap="round"/></svg><b>Relatório montado</b><span>frases já escritas e revisadas, com os dados da página</span><span class="preco">de graça</span></div>
+</div>
+<p class="frase">É como trocar os pareceres por um bom checklist — e o consultor só confirma o que o checklist não vê.</p>
+
+<h2>Quanto se economiza</h2>
+<div class="g g2">
+  <div class="card">
+    <span class="tag">Cada análise, em centavos de dólar</span>
+    <div id="custo"></div>
+  </div>
+  <div class="card">
+    <span class="tag">Conta do mês, em dólares</span>
+    <div id="mes"></div>
+  </div>
+</div>
+
+<h2>O que o cliente ganha</h2>
+<div class="g g4">
+  <div class="card"><svg class="ico" viewBox="0 0 64 64"><circle cx="32" cy="32" r="24" fill="none" stroke="var(--bom)" stroke-width="4"/><path d="M32 18v15l10 6" fill="none" stroke="var(--bom)" stroke-width="4" stroke-linecap="round"/></svg><b>Mais rápido</b><p class="leg">A nota sai em segundos.</p></div>
+  <div class="card"><svg class="ico" viewBox="0 0 64 64"><path d="M10 32h44M32 10c-9 8-9 36 0 44M32 10c9 8 9 36 0 44" fill="none" stroke="var(--bom)" stroke-width="3.5"/><circle cx="32" cy="32" r="22" fill="none" stroke="var(--bom)" stroke-width="4"/></svg><b>Cinco idiomas na hora</b><p class="leg">Trocar o idioma deixa de custar.</p></div>
+  <div class="card"><svg class="ico" viewBox="0 0 64 64"><rect x="8" y="14" width="20" height="36" rx="3" fill="none" stroke="var(--bom)" stroke-width="3.5"/><rect x="36" y="14" width="20" height="36" rx="3" fill="none" stroke="var(--bom)" stroke-width="3.5"/><path d="M14 30h8M42 30h8M14 38h8M42 38h8" stroke="var(--bom)" stroke-width="3" stroke-linecap="round"/></svg><b>Resultado consistente</b><p class="leg">A mesma página dá a mesma análise.</p></div>
+  <div class="card"><svg class="ico" viewBox="0 0 64 64"><path d="M12 50V20M12 50h40" stroke="var(--bom)" stroke-width="4" stroke-linecap="round"/><path d="M18 40l10-10 8 6 14-16" fill="none" stroke="var(--bom)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Antes e depois confiável</b><p class="leg">Fica claro o que melhorou entre duas análises.</p></div>
+</div>
+
+<h2>O caminho</h2>
+<p class="lead">Em etapas. Cada uma já economiza, e todas podem ser desfeitas.</p>
+<div class="estrada" id="estrada"></div>
+
+<h2>Os cuidados</h2>
+<div class="g g3">
+  <div class="card"><b>A nota não pode mudar sem motivo</b><p class="leg">30 páginas reais servem de régua. Só se avança se as notas ficarem próximas das de hoje.</p></div>
+  <div class="card"><b>O olhar humano sobre o visual</b><p class="leg">Beleza e primeira impressão são difíceis de medir. Há uma opção barata de manter um olhar rápido à foto da página.</p></div>
+  <div class="card"><b>Textos prontos, mas não repetitivos</b><p class="leg">As frases são escritas uma vez, com variações, e revisadas por nativos em cada idioma.</p></div>
+</div>
+
+<p class="rodape">O custo e o tempo de hoje foram medidos numa análise real, em 10 de outubro de 2026. Os valores de «depois» são estimativas cautelosas, a confirmar nas primeiras etapas.</p>
+</main>
+
+<script type="application/json" id="dados">
+{
+  "custo": [
+    {"nome": "Hoje", "valor": 6.2, "texto": "6 centavos", "tipo": "caro"},
+    {"nome": "Depois", "valor": 1.2, "texto": "cerca de 1 centavo", "tipo": "bom"}
+  ],
+  "mes": [
+    {"nome": "Hoje", "valor": 280, "texto": "US$ 280", "tipo": "caro"},
+    {"nome": "Depois", "valor": 55, "texto": "US$ 30 a 80", "tipo": "bom"}
+  ],
+  "estrada": [
+    {"n": "1", "t": "Economizar já", "d": "Dois ajustes simples no sistema atual. Primeira queda no custo."},
+    {"n": "2", "t": "Montar a régua", "d": "30 páginas reais para comparar as notas de hoje com as novas."},
+    {"n": "3", "t": "Testar as opções", "d": "Dois fornecedores respondem às mesmas perguntas. Mede-se acerto, preço e velocidade."},
+    {"n": "?", "t": "Decidir", "d": "Com os números reais, escolhe-se o fornecedor e confirma-se o plano.", "decide": true},
+    {"n": "4", "t": "Construir por partes", "d": "Cada critério passa para o checklist, um de cada vez, sempre comparando com a régua."},
+    {"n": "5", "t": "Virar a chave", "d": "O sistema novo vira o padrão. O antigo fica de reserva."}
+  ]
+}
+</script>
+<script>
+(function(){
+  var D = JSON.parse(document.getElementById("dados").textContent);
+  var cor = {caro:"var(--caro)", bom:"var(--bom)"};
+  function barras(id, lista){
+    var max = Math.max.apply(null, lista.map(function(x){return x.valor;}));
+    document.getElementById(id).innerHTML = lista.map(function(x){
+      return '<div class="barra"><div class="nome"><span>'+x.nome+'</span><span style="color:'+cor[x.tipo]+'">'+x.texto+'</span></div>'+
+        '<div class="trilho"><i style="width:'+(100*x.valor/max)+'%;background:'+cor[x.tipo]+'"></i></div></div>';
+    }).join("");
+  }
+  barras("custo", D.custo); barras("mes", D.mes);
+  document.getElementById("estrada").innerHTML = D.estrada.map(function(e){
+    return '<div class="parada'+(e.decide?' decide':'')+'"><div class="n">'+e.n+'</div><b>'+e.t+'</b><span>'+e.d+'</span></div>';
+  }).join("");
+  document.getElementById("tema").addEventListener("click", function(){
+    var r=document.documentElement, escuro=r.getAttribute("data-theme")==="dark"||(!r.getAttribute("data-theme")&&window.matchMedia("(prefers-color-scheme: dark)").matches);
+    r.setAttribute("data-theme", escuro?"light":"dark");
+  });
+})();
+</script>
+</body>
+</html>
